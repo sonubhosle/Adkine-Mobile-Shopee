@@ -1,0 +1,25 @@
+<?php
+// Auto-generated settings cache
+return array (
+  'site_name' => 'Adkine Mobile Shopee',
+  'site_tagline' => 'Smartphones, Certified Chip-Level Repairs & Genuine Accessories',
+  'site_email' => 'support@apexmobilehub.com',
+  'site_phone' => '+91 98765 43210',
+  'store_address' => 'Showroom 101, Electronics City Tech Park, Bengaluru, Karnataka 560100',
+  'store_gstin' => '29AABCA1234A1Z5',
+  'currency_code' => 'INR',
+  'currency_symbol' => '₹',
+  'gst_rate_percent' => '18.00',
+  'cgst_rate_percent' => '9.00',
+  'sgst_rate_percent' => '9.00',
+  'razorpay_key_id' => 'rzp_test_YourKeyHere',
+  'razorpay_key_secret' => 'YourSecretKeyHere',
+  'smtp_host' => 'smtp.gmail.com',
+  'smtp_port' => '587',
+  'smtp_encryption' => 'tls',
+  'smtp_username' => 'alerts@apexmobilehub.com',
+  'smtp_password' => '',
+  'mail_from_name' => 'Adkine Mobile Shopee',
+  'diagnosis_fee' => '350.00',
+  'pickup_charge' => '150.00',
+);

@@ -1,0 +1,25 @@
+User-agent: *
+Disallow: /MobileShop2/admin/
+Disallow: /MobileShop2/technician/
+Disallow: /MobileShop2/actions/
+Disallow: /MobileShop2/includes/
+Disallow: /MobileShop2/database/
+Disallow: /MobileShop2/cache/
+Disallow: /MobileShop2/cart.php
+Disallow: /MobileShop2/checkout.php
+Disallow: /MobileShop2/account.php
+Disallow: /MobileShop2/orders.php
+Disallow: /MobileShop2/order-detail.php
+Disallow: /MobileShop2/my-repairs.php
+Disallow: /MobileShop2/login.php
+Disallow: /MobileShop2/register.php
+Disallow: /MobileShop2/forgot-password.php
+Disallow: /MobileShop2/reset-password.php
+Disallow: /MobileShop2/payment-verify.php
+
+# Allow public crawl of assets
+Allow: /MobileShop2/uploads/
+Allow: /MobileShop2/assets/
+
+Sitemap: http://localhost/MobileShop2/sitemap.xml
+

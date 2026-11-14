@@ -275,12 +275,21 @@
                     return;
                 }
 
-                // 2. Close Language Switcher
-                const langDropdown = document.getElementById('langDropdown');
-                if (langDropdown && langDropdown.classList.contains('open')) {
-                    closeLangDropdown();
-                    const langBtn = document.getElementById('langSwitcherBtn');
-                    if (langBtn) langBtn.focus();
+                // 2. Close Search Suggestions Dropdown
+                const dBox = document.getElementById('desktopSearchSuggestions');
+                if (dBox && !dBox.classList.contains('pointer-events-none')) {
+                    dBox.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none', 'scale-95');
+                    dBox.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto', 'scale-100');
+                    const dInput = document.getElementById('desktopStoreSearch');
+                    if (dInput) dInput.focus();
+                    return;
+                }
+                const mBox = document.getElementById('mobileSearchSuggestions');
+                if (mBox && !mBox.classList.contains('pointer-events-none')) {
+                    mBox.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none', 'scale-95');
+                    mBox.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto', 'scale-100');
+                    const mInput = document.getElementById('responsiveStoreSearch');
+                    if (mInput) mInput.focus();
                     return;
                 }
 
@@ -361,188 +370,305 @@
 
         lucide.createIcons();
 
-        /* ═══════════════════════════════════════════════
-           GOOGLE TRANSLATE — Custom Language Switcher JS
-           ═══════════════════════════════════════════════ */
+        // -------------------------------------------------------------
+        // Live Enhanced Product Search with Smooth Suggestion Dropdown
+        // -------------------------------------------------------------
+        function initLiveSearch(inputId, boxId, clearBtnId, formId) {
+            const input = document.getElementById(inputId);
+            const box = document.getElementById(boxId);
+            const clearBtn = document.getElementById(clearBtnId);
+            const form = document.getElementById(formId);
+            if (!input || !box) return;
 
-        // 1. Google Translate Init Callback
-        window.googleTranslateElementInit = function () {
-            try {
-                if (window.google && google.translate && google.translate.TranslateElement) {
-                    new google.translate.TranslateElement({
-                        pageLanguage: 'en',
-                        includedLanguages: 'en,hi,mr',
-                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                        autoDisplay: false
-                    }, 'google_translate_element');
-                }
-            } catch (e) {
-                console.warn('Google Translate initialization:', e);
+            let debounceTimer = null;
+            let currentController = null;
+            let activeIndex = -1;
+            const searchEndpoint = '<?= url('/actions/product-search.php') ?>';
+            const shopAllUrl = '<?= url('/shop.php') ?>';
+
+            function openBox() {
+                box.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none', 'scale-95');
+                box.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto', 'scale-100');
+                input.setAttribute('aria-expanded', 'true');
             }
-        };
 
-        // 2. Cookie Management for Google Translate
-        function clearGoogleTransCookies() {
-            var host = window.location.hostname;
-            var paths = ['/', '/MobileShop2', '/MobileShop2/'];
-            var domains = ['', host];
-            if (host !== 'localhost' && !host.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-                domains.push('.' + host);
+            function closeBox() {
+                box.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none', 'scale-95');
+                box.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto', 'scale-100');
+                input.setAttribute('aria-expanded', 'false');
+                activeIndex = -1;
             }
-            paths.forEach(function (p) {
-                domains.forEach(function (d) {
-                    var domainStr = d ? '; domain=' + d : '';
-                    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=' + p + domainStr;
-                    document.cookie = 'googtrans=/en/en; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=' + p + domainStr;
-                });
-            });
-        }
 
-        function setGoogleTransCookies(lang) {
-            var val = '/en/' + lang;
-            var host = window.location.hostname;
-            var paths = ['/', '/MobileShop2', '/MobileShop2/'];
-            var domains = ['', host];
-            if (host !== 'localhost' && !host.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-                domains.push('.' + host);
+            function escapeHtml(str) {
+                if (!str) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
             }
-            var exp = '; expires=' + new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
-            paths.forEach(function (p) {
-                domains.forEach(function (d) {
-                    var domainStr = d ? '; domain=' + d : '';
-                    document.cookie = 'googtrans=' + val + exp + '; path=' + p + domainStr;
-                });
-            });
-        }
 
-        // 3. UI State Updater
-        function updateLanguageUI(lang, flag, label) {
-            var flagEl  = document.getElementById('langCurrentFlag');
-            var labelEl = document.getElementById('langCurrentLabel');
-            if (flagEl)  flagEl.textContent  = flag;
-            if (labelEl) labelEl.textContent = label;
+            function highlightMatch(text, query) {
+                if (!query) return escapeHtml(text);
+                const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(${escaped})`, 'gi');
+                return escapeHtml(text).replace(regex, '<mark class="bg-blue-100 text-blue-900 font-black px-0.5 rounded">$1</mark>');
+            }
 
-            // Highlight active button
-            document.querySelectorAll('.lang-option').forEach(function (btn) {
-                if (btn.getAttribute('data-lang') === lang) {
-                    btn.classList.add('active-lang');
+            function renderLoading(q) {
+                box.innerHTML = `
+                    <div class="p-3 space-y-2">
+                        <div class="flex items-center justify-between text-[11px] font-black uppercase tracking-wider text-slate-400 px-1">
+                            <span class="flex items-center gap-1.5">
+                                <i data-lucide="loader-2" class="w-3.5 h-3.5 text-blue-600 animate-spin"></i>
+                                <span>Searching for &ldquo;${escapeHtml(q)}&rdquo;...</span>
+                            </span>
+                        </div>
+                        <div class="space-y-1.5 animate-pulse">
+                            <div class="h-11 bg-slate-100 rounded-xl"></div>
+                            <div class="h-11 bg-slate-100 rounded-xl"></div>
+                            <div class="h-11 bg-slate-100 rounded-xl"></div>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+                openBox();
+            }
+
+            function renderResults(data, q) {
+                if (!data.products || data.products.length === 0) {
+                    box.innerHTML = `
+                        <div class="p-5 text-center">
+                            <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-2.5">
+                                <i data-lucide="search-x" class="w-5 h-5"></i>
+                            </div>
+                            <div class="text-xs font-black text-slate-800">No matching products found</div>
+                            <p class="text-[11px] text-slate-400 mt-0.5">We could not find anything matching &ldquo;${escapeHtml(q)}&rdquo;</p>
+                            <a href="${shopAllUrl}" class="inline-flex items-center gap-1 text-xs font-extrabold text-blue-600 hover:text-blue-700 mt-2.5 transition">
+                                <span>Browse full catalogue</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    `;
                 } else {
-                    btn.classList.remove('active-lang');
+                    const itemsHtml = data.products.map((item, idx) => {
+                        let stockBadge = '';
+                        if (item.stock_status === 'in_stock') {
+                            stockBadge = `<span class="inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>In Stock</span>`;
+                        } else if (item.stock_status === 'low_stock') {
+                            stockBadge = `<span class="inline-flex items-center gap-1 text-[10px] font-extrabold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Only ${item.stock} left</span>`;
+                        } else {
+                            stockBadge = `<span class="inline-flex items-center gap-1 text-[10px] font-extrabold text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded-md">Sold Out</span>`;
+                        }
+
+                        const imageMarkup = item.image_url
+                            ? `<img src="${item.image_url}" alt="${escapeHtml(item.name)}" class="w-full h-full object-contain">`
+                            : `<i data-lucide="smartphone" class="w-4 h-4 text-blue-600"></i>`;
+
+                        const discountMarkup = item.has_discount
+                            ? `<div class="flex items-center justify-end gap-1"><span class="text-[10px] text-slate-400 line-through">${item.formatted_base_price}</span><span class="text-[9px] font-black text-emerald-600 bg-emerald-50 px-1 rounded">-${item.discount_percent}%</span></div>`
+                            : '';
+
+                        return `
+                            <a href="${item.url}" role="option" aria-selected="false" data-index="${idx}"
+                                class="search-suggestion-item group flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 focus:bg-indigo-50/80 transition-all duration-150">
+                                <div class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-200/60 p-1 flex items-center justify-center shrink-0 overflow-hidden">
+                                    ${imageMarkup}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate transition-colors">
+                                        ${highlightMatch(item.name, q)}
+                                    </div>
+                                    <div class="flex items-center gap-1.5 mt-0.5 text-[10px] text-slate-500">
+                                        <span class="font-bold text-slate-600">${escapeHtml(item.brand_name || 'Brand')}</span>
+                                        <span>•</span>
+                                        <span class="truncate">${escapeHtml(item.category_name || 'Accessories')}</span>
+                                        <span>•</span>
+                                        ${stockBadge}
+                                    </div>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <div class="text-xs font-black text-slate-900">${item.formatted_price}</div>
+                                    ${discountMarkup}
+                                </div>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0"></i>
+                            </a>
+                        `;
+                    }).join('');
+
+                    box.innerHTML = `
+                        <div class="flex items-center justify-between px-2.5 py-1.5 border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <span class="flex items-center gap-1 text-slate-500">
+                                <i data-lucide="sparkles" class="w-3 h-3 text-blue-600"></i>
+                                <span>Available Products (${data.total})</span>
+                            </span>
+                            <span class="text-slate-400 lowercase font-medium hidden sm:inline">use ↑ ↓ to navigate</span>
+                        </div>
+                        <div class="max-h-80 overflow-y-auto py-1 space-y-0.5" role="listbox">
+                            ${itemsHtml}
+                        </div>
+                        <div class="pt-2 pb-0.5 px-2.5 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <a href="${data.all_url}" class="font-extrabold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition">
+                                <span>View all results for &ldquo;${escapeHtml(q)}&rdquo;</span>
+                                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                            </a>
+                            <span class="text-[10px] text-slate-400 font-semibold hidden sm:inline">↵ to view all</span>
+                        </div>
+                    `;
                 }
-            });
 
-            // Toggle checkmarks across desktop & mobile
-            document.querySelectorAll('.lang-check').forEach(function (el) {
-                if (el.classList.contains('lang-check-' + lang)) {
-                    el.classList.remove('opacity-0');
-                } else {
-                    el.classList.add('opacity-0');
-                }
-            });
-        }
-
-        // 4. Switch Language Handler
-        function switchLanguage(lang, flag, label, name) {
-            updateLanguageUI(lang, flag, label);
-
-            localStorage.setItem('adkine_lang',       lang);
-            localStorage.setItem('adkine_lang_flag',  flag);
-            localStorage.setItem('adkine_lang_label', label);
-
-            closeLangDropdown();
-
-            if (lang === 'en') {
-                clearGoogleTransCookies();
-                location.reload();
-                return;
+                lucide.createIcons();
+                openBox();
             }
 
-            setGoogleTransCookies(lang);
+            async function performSearch(q) {
+                if (q.length < 2) {
+                    closeBox();
+                    return;
+                }
 
-            var combo = document.querySelector('.goog-te-combo');
-            if (combo) {
-                combo.value = lang;
-                combo.dispatchEvent(new Event('change'));
-                // Verify translation kicked in, else fallback to reload
-                setTimeout(function () {
-                    var c = document.querySelector('.goog-te-combo');
-                    if (c && c.value !== lang) {
-                        location.reload();
+                if (currentController) {
+                    currentController.abort();
+                }
+                currentController = new AbortController();
+
+                renderLoading(q);
+
+                try {
+                    const res = await fetch(`${searchEndpoint}?q=${encodeURIComponent(q)}`, {
+                        signal: currentController.signal,
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    if (!res.ok) throw new Error('Search failed');
+                    const data = await res.json();
+                    renderResults(data, q);
+                } catch (err) {
+                    if (err.name === 'AbortError') return;
+                    console.error('Search error:', err);
+                    box.innerHTML = `
+                        <div class="p-4 text-center text-xs text-slate-500">
+                            Unable to load live suggestions. Press Enter to browse results.
+                        </div>
+                    `;
+                    openBox();
+                }
+            }
+
+            // Input typing listener with debounce
+            input.addEventListener('input', function() {
+                const val = input.value.trim();
+                if (clearBtn) {
+                    if (val.length > 0) {
+                        clearBtn.classList.remove('hidden');
+                    } else {
+                        clearBtn.classList.add('hidden');
                     }
-                }, 500);
-            } else {
-                location.reload();
+                }
+
+                clearTimeout(debounceTimer);
+                if (val.length < 2) {
+                    closeBox();
+                    return;
+                }
+                debounceTimer = setTimeout(() => {
+                    performSearch(val);
+                }, 200);
+            });
+
+            // Focus in listener
+            input.addEventListener('focus', function() {
+                const val = input.value.trim();
+                if (val.length >= 2) {
+                    performSearch(val);
+                }
+            });
+
+            // Clear button click listener
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    input.value = '';
+                    clearBtn.classList.add('hidden');
+                    closeBox();
+                    input.focus();
+                });
             }
-        }
 
-        // 5. Toggle / Close Dropdown
-        function toggleLangDropdown() {
-            var dropdown = document.getElementById('langDropdown');
-            var chevron  = document.getElementById('langChevron');
-            var btn      = document.getElementById('langSwitcherBtn');
-            if (!dropdown) return;
-            var isOpen = dropdown.classList.contains('open');
-            if (isOpen) {
-                dropdown.classList.remove('open');
-                if (chevron) chevron.style.transform = '';
-                if (btn)     btn.setAttribute('aria-expanded', 'false');
-            } else {
-                dropdown.classList.add('open');
-                if (chevron) chevron.style.transform = 'rotate(180deg)';
-                if (btn)     btn.setAttribute('aria-expanded', 'true');
+            // Keyboard navigation in search suggestions
+            input.addEventListener('keydown', function(e) {
+                const items = box.querySelectorAll('.search-suggestion-item');
+                if (!items.length || box.classList.contains('pointer-events-none')) return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeIndex = (activeIndex + 1) % items.length;
+                    updateActiveItem(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeIndex = (activeIndex - 1 + items.length) % items.length;
+                    updateActiveItem(items);
+                } else if (e.key === 'Enter') {
+                    if (activeIndex >= 0 && items[activeIndex]) {
+                        e.preventDefault();
+                        window.location.href = items[activeIndex].href;
+                    }
+                } else if (e.key === 'Escape' || e.key === 'Esc') {
+                    e.preventDefault();
+                    closeBox();
+                }
+            });
+
+            function updateActiveItem(items) {
+                items.forEach((item, idx) => {
+                    if (idx === activeIndex) {
+                        item.classList.add('bg-blue-50/90', 'text-blue-600', 'ring-1', 'ring-blue-500/20');
+                        item.setAttribute('aria-selected', 'true');
+                        item.scrollIntoView({ block: 'nearest' });
+                    } else {
+                        item.classList.remove('bg-blue-50/90', 'text-blue-600', 'ring-1', 'ring-blue-500/20');
+                        item.setAttribute('aria-selected', 'false');
+                    }
+                });
             }
+
+            // Click outside closes suggestion box
+            document.addEventListener('click', function(e) {
+                if (!box.contains(e.target) && !input.contains(e.target)) {
+                    closeBox();
+                }
+            });
         }
 
-        function closeLangDropdown() {
-            var dropdown = document.getElementById('langDropdown');
-            var chevron  = document.getElementById('langChevron');
-            var btn      = document.getElementById('langSwitcherBtn');
-            if (dropdown) dropdown.classList.remove('open');
-            if (chevron)  chevron.style.transform = '';
-            if (btn)      btn.setAttribute('aria-expanded', 'false');
-        }
+        // Initialize Desktop & Mobile Live Search
+        initLiveSearch('desktopStoreSearch', 'desktopSearchSuggestions', 'desktopSearchClear', 'desktopSearchForm');
+        initLiveSearch('responsiveStoreSearch', 'mobileSearchSuggestions', 'mobileSearchClear', 'mobileSearchForm');
 
-        // 6. Close on Outside Click
-        document.addEventListener('click', function (e) {
-            var wrap = document.getElementById('langSwitcherWrap');
-            if (wrap && !wrap.contains(e.target)) closeLangDropdown();
+        // Global Shortcut: Ctrl+K / Cmd+K or "/" to focus search
+        document.addEventListener('keydown', function(e) {
+            const isEditing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                const targetInput = window.innerWidth >= 768 
+                    ? document.getElementById('desktopStoreSearch') 
+                    : document.getElementById('responsiveStoreSearch');
+                if (targetInput) {
+                    targetInput.focus();
+                    targetInput.select();
+                }
+            } else if (e.key === '/' && !isEditing) {
+                e.preventDefault();
+                const targetInput = window.innerWidth >= 768 
+                    ? document.getElementById('desktopStoreSearch') 
+                    : document.getElementById('responsiveStoreSearch');
+                if (targetInput) {
+                    targetInput.focus();
+                    targetInput.select();
+                }
+            }
         });
 
-        // 7. Restore Saved Language on Page Load
-        (function initLanguageState() {
-            var saved = localStorage.getItem('adkine_lang');
-            var flag  = localStorage.getItem('adkine_lang_flag');
-            var label = localStorage.getItem('adkine_lang_label');
-
-            if (!saved) {
-                var cookieMatch = document.cookie.match(/googtrans=\/en\/([a-z]{2})/i);
-                if (cookieMatch && cookieMatch[1]) {
-                    var cLang = cookieMatch[1].toLowerCase();
-                    if (cLang === 'hi')      { saved = 'hi'; flag = '🇮🇳'; label = 'हिं'; }
-                    else if (cLang === 'mr') { saved = 'mr'; flag = '🇮🇳'; label = 'म'; }
-                }
-            }
-
-            if (saved && flag && label) {
-                updateLanguageUI(saved, flag, label);
-                if (saved !== 'en') {
-                    setGoogleTransCookies(saved);
-                    var attempts = 0;
-                    var t = setInterval(function () {
-                        var combo = document.querySelector('.goog-te-combo');
-                        if (combo) {
-                            clearInterval(t);
-                            if (combo.value !== saved) {
-                                combo.value = saved;
-                                combo.dispatchEvent(new Event('change'));
-                            }
-                        } else if (++attempts > 30) {
-                            clearInterval(t);
-                        }
-                    }, 200);
-                }
-            }
-        })();
+        lucide.createIcons();
     </script>
 </body>
 </html>

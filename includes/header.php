@@ -158,7 +158,7 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
             }
         }
     </script>
-    
+   
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
@@ -240,6 +240,16 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
         :focus-visible {
             outline: 2px solid #2563eb !important;
             outline-offset: 2px !important;
+        }
+
+        /* Prevent harsh outline on form inputs so clean focus ring and borders render smoothly */
+        input:focus,
+        input:focus-visible,
+        textarea:focus,
+        textarea:focus-visible,
+        select:focus,
+        select:focus-visible {
+            outline: none !important;
         }
 
         /* ── Cross-Browser & Cross-Device Compatibility Helpers ── */
@@ -383,7 +393,7 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
 
     <!-- Top Micro Announcement & Utility Bar with Live Scroller -->
     <div class="bg-slate-950 text-slate-300 text-xs py-2 border-b border-slate-800/80 overflow-hidden relative z-40 w-full">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-2">
+        <div class=" px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-2">
             
             <!-- Continuous Marquee Live Scroller with WCAG Pause Control -->
             <div class="w-full md:flex-1 md:max-w-2xl lg:max-w-3xl flex items-center gap-2.5 overflow-hidden py-0.5 min-w-0">
@@ -517,27 +527,35 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
 
                     <!-- Search Input with Live Autocomplete Suggestions -->
                     <form action="<?= url('/shop.php') ?>" method="GET" role="search" id="desktopSearchForm"
-                        class="hidden md:flex relative items-center w-48 lg:w-56 xl:w-72 2xl:w-80 group">
+                        class="hidden md:flex relative items-center w-52 lg:w-64 xl:w-80 group">
                         <label for="desktopStoreSearch" class="sr-only">Search phones and accessories</label>
+                        
+                        <!-- Left Search Icon -->
+                        <div class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                            <i data-lucide="search" class="w-4 h-4" aria-hidden="true"></i>
+                        </div>
+
+                        <!-- Main Search Input -->
                         <input type="search" id="desktopStoreSearch" name="q" value="<?= e($_GET['q'] ?? '') ?>"
                             placeholder="Search phones, accessories..." autocomplete="off"
                             aria-autocomplete="list" aria-controls="desktopSearchSuggestions" aria-expanded="false"
-                            class="w-full h-10 pl-9 pr-20 rounded-xl border border-slate-300 outline-none focus:outline-none focus:ring-0">
-                        
-                        <i data-lucide="search" class="w-4 h-4 text-slate-400 group-focus-within:text-blue-600 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors" aria-hidden="true"></i>
-                        
-                        <kbd class="hidden xl:inline-flex items-center text-[9px] font-bold px-1.5 py-0.5 rounded bg-white text-slate-400 border border-slate-200 shadow-2xs group-focus-within:hidden select-none pointer-events-none absolute right-11 top-1/2 -translate-y-1/2">
+                            class="w-full h-10 pl-10 pr-24 rounded-xl bg-slate-50/90 hover:bg-slate-100/70 focus:bg-white text-xs font-medium text-slate-900 placeholder:text-slate-400 border border-slate-200 hover:border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 focus:outline-none shadow-xs transition-all duration-200">
+
+                        <!-- Keyboard Shortcut Badge (Ctrl K) -->
+                        <kbd class="hidden xl:inline-flex items-center text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-white text-slate-400 border border-slate-200/90 shadow-2xs group-focus-within:hidden select-none pointer-events-none absolute right-12 top-1/2 -translate-y-1/2 transition-opacity">
                             Ctrl K
                         </kbd>
 
+                        <!-- Clear Search Button (shows when input has text) -->
                         <button type="button" id="desktopSearchClear" aria-label="Clear search input"
-                            class="<?= empty($_GET['q']) ? 'hidden' : '' ?> absolute right-11 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-md transition focus-visible:ring-2 focus-visible:ring-blue-600">
+                            class="<?= empty($_GET['q']) ? 'hidden' : '' ?> absolute right-11 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 p-1 rounded-md transition focus:outline-none">
                             <i data-lucide="x" class="w-3.5 h-3.5"></i>
                         </button>
 
+                        <!-- Submit Search Button -->
                         <button type="submit" aria-label="Submit search"
-                            class="absolute right-1.5 top-1/2 -translate-y-1/2 inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold transition shadow-xs focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-blue-600">
-                            Go
+                            class="absolute right-1.5 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-bold tracking-wide transition shadow-xs focus:outline-none">
+                            <span>Go</span>
                         </button>
 
                         <!-- Custom Smooth Suggestions Dropdown Box -->
@@ -693,20 +711,27 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
             <!-- Mobile Search with Live Suggestions -->
             <form action="<?= url('/shop.php') ?>" method="GET" role="search" id="mobileSearchForm" class="md:hidden relative pb-3">
                 <label for="responsiveStoreSearch" class="sr-only">Search phones and accessories</label>
-                <div class="relative flex items-center">
-                    <i data-lucide="search" class="w-4 h-4 text-slate-400 group-focus-within:text-blue-600 absolute left-3.5 pointer-events-none transition-colors" aria-hidden="true"></i>
+                <div class="relative flex items-center group">
+                    <!-- Left Search Icon -->
+                    <div class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                        <i data-lucide="search" class="w-4 h-4" aria-hidden="true"></i>
+                    </div>
+
+                    <!-- Mobile Input -->
                     <input type="search" id="responsiveStoreSearch" name="q" value="<?= e($_GET['q'] ?? '') ?>"
                         placeholder="Search phones, accessories, spare parts..." autocomplete="off"
                         aria-autocomplete="list" aria-controls="mobileSearchSuggestions" aria-expanded="false"
-                        class="w-full h-11 pl-10 pr-20 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/15 focus:border-blue-500 transition-all shadow-2xs">
+                        class="w-full h-11 pl-10 pr-20 rounded-xl bg-slate-50/90 hover:bg-slate-100/70 focus:bg-white border border-slate-200 focus:border-blue-600 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 shadow-xs">
                     
+                    <!-- Clear Mobile Search Button -->
                     <button type="button" id="mobileSearchClear" aria-label="Clear mobile search"
-                        class="<?= empty($_GET['q']) ? 'hidden' : '' ?> absolute right-12 text-slate-400 hover:text-slate-600 p-1 rounded-md transition focus-visible:ring-2 focus-visible:ring-blue-600">
+                        class="<?= empty($_GET['q']) ? 'hidden' : '' ?> absolute right-12 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 p-1 rounded-md transition focus:outline-none">
                         <i data-lucide="x" class="w-3.5 h-3.5"></i>
                     </button>
                     
+                    <!-- Mobile Submit Button -->
                     <button type="submit" aria-label="Search"
-                        class="absolute right-1.5 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-xs focus-visible:ring-2 focus-visible:ring-blue-600">
+                        class="absolute right-1.5 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-bold transition shadow-xs focus:outline-none">
                         <span>Go</span>
                     </button>
                 </div>

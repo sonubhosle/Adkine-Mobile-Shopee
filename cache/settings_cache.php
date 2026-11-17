@@ -1,8 +1,8 @@
 <?php
 // Auto-generated settings cache
 return array (
-  'site_name' => 'Adkine Mobile Shopee',
-  'site_tagline' => 'Smartphones, Certified Chip-Level Repairs & Genuine Accessories',
+  'site_name' => 'Apex Mobile Hub & ERP',
+  'site_tagline' => 'Premium Electronics, Smart Repair & Gadget ERP',
   'site_email' => 'support@apexmobilehub.com',
   'site_phone' => '+91 98765 43210',
   'store_address' => 'Showroom 101, Electronics City Tech Park, Bengaluru, Karnataka 560100',
@@ -19,7 +19,7 @@ return array (
   'smtp_encryption' => 'tls',
   'smtp_username' => 'alerts@apexmobilehub.com',
   'smtp_password' => '',
-  'mail_from_name' => 'Adkine Mobile Shopee',
+  'mail_from_name' => 'Apex Mobile Hub',
   'diagnosis_fee' => '350.00',
   'pickup_charge' => '150.00',
 );

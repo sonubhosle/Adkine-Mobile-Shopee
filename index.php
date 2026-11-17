@@ -230,36 +230,266 @@ $newArrivals = db_fetch_all($sqlNewArrivals);
     </div>
 </section>
 
-<!-- Repair CTA Banner -->
-<section class="py-14 bg-gradient-to-r from-indigo-700 to-indigo-800 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div class="lg:col-span-8 space-y-4">
-                <span class="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold uppercase tracking-wider inline-block">
-                    Certified Technicians &bull; 90-Day Repair Warranty
+<!-- Repair CTA Banner: Certified Technicians & 90-Day Repair Warranty Showcase -->
+<section class="relative bg-slate-950 text-white overflow-hidden py-16 sm:py-20 border-y border-slate-800/80">
+    <!-- Ambient Tech Glow Backdrops -->
+    <div class="pointer-events-none absolute inset-0 overflow-hidden">
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/2 -right-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-32 left-1/3 w-96 h-96 bg-emerald-600/15 rounded-full blur-3xl"></div>
+        <!-- High-tech subtle dot-grid mask -->
+        <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px] opacity-25"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Top Dual Trust Pill Badge -->
+        <div class="flex flex-wrap items-center gap-2.5 mb-6">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500/15 to-teal-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold tracking-wide backdrop-blur-md shadow-xs shadow-emerald-950">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Cracked Screen or Draining Battery?</h2>
-                <p class="text-blue-100 text-sm sm:text-base max-w-2xl leading-relaxed">
-                    We repair all major smartphone models with original OEM components. Book a service appointment online, request a doorstep pickup, or walk into our showroom repair lab.
-                </p>
-                <div class="flex flex-wrap gap-4 pt-2">
-                    <a href="<?= url('/repair-book.php') ?>" class="px-6 py-3 rounded-xl bg-white text-blue-700 font-extrabold text-xs hover:bg-indigo-50 transition shadow-lg shadow-black/10 flex items-center gap-2">
+                <span>Certified Technicians</span>
+                <span class="text-emerald-500/60">•</span>
+                <span>ESD-Safe Cleanroom Lab</span>
+            </div>
+
+            <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-400 text-xs font-bold tracking-wide backdrop-blur-md shadow-xs shadow-blue-950">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-400"></i>
+                <span>90-Day Repair Warranty</span>
+            </div>
+
+            <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/80 text-slate-300 text-xs font-medium">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>45-Min Express Turnaround</span>
+            </div>
+        </div>
+
+        <!-- Main 2-Column Showcase Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            
+            <!-- Left Column: Compelling Typography & CTAs -->
+            <div class="lg:col-span-7 space-y-6">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.15]">
+                        Cracked Screen or <br class="hidden sm:block">
+                        <span class="bg-gradient-to-r from-blue-400 via-sky-300 to-emerald-300 bg-clip-text text-transparent">
+                            Draining Battery?
+                        </span>
+                    </h2>
+                    <p class="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl">
+                        Restore your smartphone to factory precision with 100% genuine OEM components, robotic laser re-sealing, and rigorous 24-point diagnostic testing. Walk into our showroom lab, request doorstep courier pickup, or book an appointment online.
+                    </p>
+                </div>
+
+                <!-- 4 Trust Bullet Pills -->
+                <div class="grid grid-cols-2 gap-3 sm:gap-4 max-w-lg pt-1">
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 backdrop-blur-sm">
+                        <div class="p-1.5 rounded-lg bg-blue-500/15 text-blue-400 shrink-0">
+                            <i data-lucide="cpu" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-white">100% OEM Spares</div>
+                            <div class="text-[11px] text-slate-400">Direct factory supply</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 backdrop-blur-sm">
+                        <div class="p-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 shrink-0">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-white">90-Day Warranty</div>
+                            <div class="text-[11px] text-slate-400">Zero-hassle replacement</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 backdrop-blur-sm">
+                        <div class="p-1.5 rounded-lg bg-amber-500/15 text-amber-400 shrink-0">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-white">45-Min Express</div>
+                            <div class="text-[11px] text-slate-400">While-you-wait repairs</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 backdrop-blur-sm">
+                        <div class="p-1.5 rounded-lg bg-purple-500/15 text-purple-400 shrink-0">
+                            <i data-lucide="lock" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-white">Data Privacy Safe</div>
+                            <div class="text-[11px] text-slate-400">Zero data wipe needed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA Actions & Direct Contact -->
+                <div class="flex flex-wrap items-center gap-3.5 pt-2">
+                    <a href="<?= url('/repair-book.php') ?>" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
                         <i data-lucide="calendar" class="w-4 h-4"></i>
                         <span>Book Repair Ticket</span>
                     </a>
-                    <a href="<?= url('/repair-track.php') ?>" class="px-6 py-3 rounded-xl bg-indigo-800/80 hover:bg-indigo-800 text-white font-extrabold text-xs border border-blue-500/40 transition flex items-center gap-2">
-                        <i data-lucide="search" class="w-4 h-4"></i>
-                        <span>Check Repair Status</span>
+
+                    <a href="<?= url('/repair-track.php') ?>" class="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white font-bold text-xs sm:text-sm border border-slate-700/80 shadow-md hover:border-slate-600 transition-all duration-200">
+                        <i data-lucide="search" class="w-4 h-4 text-blue-400"></i>
+                        <span>Track Ticket Status</span>
                     </a>
+
+                    <?php if ($sitePhone = setting('site_phone')): ?>
+                        <a href="tel:<?= preg_replace('/\s+/', '', $sitePhone) ?>" class="inline-flex items-center gap-2 px-3.5 py-3 rounded-xl text-slate-400 hover:text-amber-400 text-xs font-semibold hover:bg-slate-900/50 transition">
+                            <i data-lucide="phone-call" class="w-4 h-4 text-amber-400"></i>
+                            <span>Call Lab: <?= e($sitePhone) ?></span>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
-            <div class="lg:col-span-4 flex justify-center lg:justify-end">
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 text-center space-y-3 max-w-xs w-full">
-                    <div class="w-14 h-14 rounded-2xl bg-white text-blue-600 flex items-center justify-center mx-auto shadow-md">
-                        <i data-lucide="wrench" class="w-7 h-7"></i>
+
+            <!-- Right Column: Interactive Diagnostic & Popular Repair Matrix Card -->
+            <div class="lg:col-span-5">
+                <div class="relative rounded-3xl bg-slate-900/90 border border-slate-700/80 p-5 sm:p-6 shadow-2xl shadow-black/60 backdrop-blur-xl overflow-hidden">
+                    <!-- Subtle top glow inside the card -->
+                    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-32 bg-blue-500/20 blur-2xl pointer-events-none rounded-full"></div>
+
+                    <!-- Card Header / Diagnostic Live Bar -->
+                    <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-800">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                                <i data-lucide="wrench" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xs font-black tracking-wider uppercase text-slate-200">Instant Repair Intake</h3>
+                                <p class="text-[10px] text-slate-400">Choose your issue for instant quote &amp; booking</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Lab Online
+                        </span>
                     </div>
-                    <div class="font-extrabold text-lg">Instant Repair Quote</div>
-                    <p class="text-xs text-blue-200">Transparent pricing. No hidden diagnostic fees upon repair approval.</p>
+
+                    <!-- 4 Quick-Select Repair Issue Tiles -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <!-- Screen -->
+                        <a href="<?= url('/repair-book.php?issue=screen_damage') ?>" class="group p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/60 hover:border-blue-500/60 transition-all duration-200 flex flex-col justify-between">
+                            <div class="flex items-start justify-between">
+                                <div class="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i data-lucide="smartphone" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-400 group-hover:text-blue-400 flex items-center gap-0.5">
+                                    Book <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                                </span>
+                            </div>
+                            <div class="mt-3">
+                                <div class="text-xs font-bold text-white group-hover:text-blue-300 transition-colors">Screen &amp; OLED</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">Glass, Touch, Lines • ~45m</div>
+                            </div>
+                        </a>
+
+                        <!-- Battery -->
+                        <a href="<?= url('/repair-book.php?issue=battery_replacement') ?>" class="group p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/60 hover:border-emerald-500/60 transition-all duration-200 flex flex-col justify-between">
+                            <div class="flex items-start justify-between">
+                                <div class="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i data-lucide="battery-charging" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-400 group-hover:text-emerald-400 flex items-center gap-0.5">
+                                    Book <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                                </span>
+                            </div>
+                            <div class="mt-3">
+                                <div class="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">Battery Replacement</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">OEM Cell, Fast Drain • ~30m</div>
+                            </div>
+                        </a>
+
+                        <!-- Charging Port -->
+                        <a href="<?= url('/repair-book.php?issue=charging_port') ?>" class="group p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/60 hover:border-amber-500/60 transition-all duration-200 flex flex-col justify-between">
+                            <div class="flex items-start justify-between">
+                                <div class="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i data-lucide="zap" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-400 group-hover:text-amber-400 flex items-center gap-0.5">
+                                    Book <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                                </span>
+                            </div>
+                            <div class="mt-3">
+                                <div class="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">Charging Port</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">Loose pin, Slow charge • ~40m</div>
+                            </div>
+                        </a>
+
+                        <!-- Liquid / Motherboard -->
+                        <a href="<?= url('/repair-book.php?issue=water_damage') ?>" class="group p-3 rounded-2xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/60 hover:border-purple-500/60 transition-all duration-200 flex flex-col justify-between">
+                            <div class="flex items-start justify-between">
+                                <div class="w-7 h-7 rounded-lg bg-purple-500/15 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i data-lucide="droplets" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-400 group-hover:text-purple-400 flex items-center gap-0.5">
+                                    Book <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                                </span>
+                            </div>
+                            <div class="mt-3">
+                                <div class="text-xs font-bold text-white group-hover:text-purple-300 transition-colors">Water Damage &amp; IC</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">Ultrasonic wash &amp; micro-solder</div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Bottom Guarantee Banner in Card -->
+                    <div class="mt-4 pt-3.5 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+                            <span>No Fix, No Fee Guarantee</span>
+                        </span>
+                        <a href="<?= url('/repair-book.php') ?>" class="text-blue-400 hover:text-blue-300 font-bold hover:underline flex items-center gap-0.5">
+                            <span>All Issues</span>
+                            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 Detailed Repair Guarantees / Quality Seals Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12 pt-10 border-t border-slate-800/80">
+            <div class="flex items-start gap-3.5 p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                    <i data-lucide="award" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-wider text-white">Certified Technicians</h4>
+                    <p class="text-xs text-slate-400 mt-1 leading-relaxed">Level-4 ESD-certified chip engineers trained across Apple, Samsung, OnePlus &amp; Xiaomi.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-3.5 p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-wider text-white">90-Day Full Warranty</h4>
+                    <p class="text-xs text-slate-400 mt-1 leading-relaxed">Every replaced screen, battery, or component comes with a 90-day free replacement guarantee.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-3.5 p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                    <i data-lucide="cpu" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-wider text-white">100% Genuine OEM Parts</h4>
+                    <p class="text-xs text-slate-400 mt-1 leading-relaxed">Authentic displays and high-density cells ensure true-tone fidelity and battery health metrics.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-3.5 p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+                    <i data-lucide="truck" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black uppercase tracking-wider text-white">Doorstep &amp; Express Lab</h4>
+                    <p class="text-xs text-slate-400 mt-1 leading-relaxed">Walk in for 45-min counter service or schedule insured doorstep pickup &amp; delivery.</p>
                 </div>
             </div>
         </div>

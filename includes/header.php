@@ -503,19 +503,18 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
                     <!-- Brand Name & Identity -->
                     <div class="flex flex-col">
                         <div class="flex items-center gap-1 leading-none">
-                            <span class="text-sm sm:text-base font-black tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
-                                ADKINE
+                            <span class="text-base sm:text-base font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600   transition-colors">
+                               New Adkine
                             </span>
-                            <span class="text-sm sm:text-base font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600">
-                                MOBILE
-                            </span>
-                            <span class="inline-flex items-center px-1 py-0.5 rounded bg-gradient-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30 text-amber-700 text-[8px] font-black tracking-wider uppercase">
-                                SHOPEE
-                            </span>
+                            
                         </div>
                         <div class="flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-[0.12em] text-slate-400 mt-0.5">
-                            <span class="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span>Sales <span class="text-slate-300">•</span> Repairs <span class="text-slate-300">•</span> Gadgets</span>
+                            <span class="text-sm sm:text-base font-black tracking-tight text-slate-800">
+                                Mobile
+                            </span>
+                            <span class="inline-flex items-center px-1 py-0.5 rounded bg-gradient-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30 text-amber-700 text-[8px] font-black tracking-wider uppercase">
+                               Shopee
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -615,29 +614,30 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
                             </div>
                         </div>
                     </nav>
-                    <!-- Book Repair Button -->
-                    <a href="<?= url('/repair-book.php') ?>" class="hidden sm:inline-flex items-center gap-1.5 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600  to-emerald-700  text-white font-bold text-xs">
-                        <i data-lucide="wrench" class="w-3.5 h-3.5" aria-hidden="true"></i>
-                        <span>Book Repair</span>
+                    <!-- Book Repair Button: Icon Only on Mobile, Icon + Text on Desktop -->
+                    <a href="<?= url('/repair-book.php') ?>" 
+                        aria-label="Book Device Repair Service" 
+                        title="Book Device Repair"
+                        class="inline-flex items-center justify-center h-10 w-10 sm:w-auto sm:px-3.5 sm:gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold text-xs shadow-xs transition-all shrink-0">
+                        <i data-lucide="wrench" class="w-4 h-4 shrink-0" aria-hidden="true"></i>
+                        <span class="hidden sm:inline">Book Repair</span>
                     </a>
 
-                    <!-- Shopping Cart Trigger Button -->
+                    <!-- Shopping Cart Trigger Button: Icon Only (No Price in Header) -->
                     <button type="button" id="cartHeaderTrigger" onclick="toggleCartDrawer(true)"
-                        aria-label="View Shopping Cart (<?= $cartPreview['total_items'] ?> items, <?= format_currency($cartPreview['grand_total']) ?>)"
+                        aria-label="View Shopping Cart (<?= $cartPreview['total_items'] ?> items)"
                         aria-haspopup="dialog" aria-expanded="false" aria-controls="cartDrawer"
-                        class="relative h-10 px-3 sm:px-3.5 rounded-xl border border-slate-200/90 hover:border-blue-400 text-slate-700 hover:bg-blue-50/40 transition-all flex items-center gap-2 group shadow-2xs focus-visible:ring-2 focus-visible:ring-blue-600">
-                        <div class="relative" aria-hidden="true">
+                        title="Shopping Cart (<?= $cartPreview['total_items'] ?> items)"
+                        class="relative h-10 w-10 rounded-xl border border-slate-200/90 hover:border-blue-400 text-slate-700 hover:bg-blue-50/40 transition-all flex items-center justify-center group shadow-2xs focus-visible:ring-2 focus-visible:ring-blue-600 shrink-0">
+                        <div class="relative flex items-center justify-center" aria-hidden="true">
                             <i data-lucide="shopping-bag" class="w-4 h-4 text-slate-700 group-hover:text-blue-600 group-hover:scale-105 transition-transform"></i>
                             <span id="cartBadgeCount" class="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] px-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-black rounded-full flex items-center justify-center ring-2 ring-white shadow-xs">
                                 <?= $cartPreview['total_items'] ?>
                             </span>
                         </div>
-                        <span class="hidden sm:inline text-xs font-bold text-slate-900 group-hover:text-blue-600 transition" id="cartHeaderTotal" aria-hidden="true">
-                            <?= format_currency($cartPreview['grand_total']) ?>
-                        </span>
                     </button>
 
-                    <!-- User Account Dropdown -->
+                    <!-- User Account Dropdown or Sign In -->
                     <?php if (auth()): ?>
                         <div class="relative group py-2">
                             <button type="button" aria-label="User Profile" class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center shadow-sm hover:shadow-md hover:scale-105 ring-2 ring-slate-200 hover:ring-blue-400 transition-all duration-200 select-none">
@@ -694,15 +694,15 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
                         </div>
                     <?php else: ?>
                         <a href="<?= url('/login.php') ?>" 
-                            class="hidden sm:inline-flex bg-gradient-to-r from-indigo-600 to-indigo-800 items-center gap-2 py-2.5 px-3.5 rounded-xl text-white  text-xs">
-                            <i data-lucide="user" class="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" aria-hidden="true"></i>
-                            <span>Login / Register</span>
+                            class="hidden sm:inline-flex bg-gradient-to-r from-indigo-600 to-indigo-800 hover:from-indigo-700 hover:to-indigo-900 items-center gap-2 h-10 px-3.5 rounded-xl text-white text-xs font-bold shadow-xs transition-all shrink-0">
+                            <i data-lucide="user" class="w-4 h-4 text-indigo-200" aria-hidden="true"></i>
+                            <span>Sign In</span>
                         </a>
                     <?php endif; ?>
 
                     <!-- Mobile Menu Hamburger Button -->
-                    <button type="button" id="mobileNavToggleBtn" onclick="toggleResponsiveNavbar()" aria-label="Toggle Navigation Menu" aria-expanded="false" aria-controls="responsiveMobileNav"
-                        class="lg:hidden h-10 w-10 p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition flex items-center justify-center focus-visible:ring-2 focus-visible:ring-blue-600">
+                    <button type="button" id="mobileNavToggleBtn" onclick="toggleResponsiveNavbar(true)" aria-label="Toggle Navigation Menu" aria-expanded="false" aria-controls="responsiveMobileNav"
+                        class="lg:hidden h-10 w-10 p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition flex items-center justify-center focus-visible:ring-2 focus-visible:ring-blue-600 shrink-0">
                         <i data-lucide="menu" id="navHamburgerIcon" class="w-5 h-5" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -742,52 +742,154 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
                     class="search-suggestions-dropdown absolute left-0 right-0 top-full mt-1 bg-white rounded-2xl border border-slate-200 shadow-2xl shadow-slate-900/15 p-2 z-50 transition-all duration-200 ease-out opacity-0 -translate-y-2 pointer-events-none scale-95">
                 </div>
             </form>
+        </div>
+    </header>
 
-            <!-- Responsive Mobile Menu -->
-            <div id="responsiveMobileNav" class="hidden lg:hidden border-t border-slate-100 py-4 space-y-3 bg-white" role="region" aria-label="Mobile Navigation Menu">
-                <div class="grid grid-cols-2 gap-2 pt-1">
-                    <a href="<?= url('/repair-book.php') ?>" class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-center text-xs font-bold flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-emerald-600">
-                        <i data-lucide="wrench" class="w-4 h-4 text-emerald-600" aria-hidden="true"></i> Book Repair
-                    </a>
-                    <a href="<?= url('/repair-track.php') ?>" class="p-2.5 rounded-xl bg-indigo-50 border border-blue-200 text-blue-800 text-center text-xs font-bold flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-blue-600">
-                        <i data-lucide="search" class="w-4 h-4 text-blue-600" aria-hidden="true"></i> Track Ticket
-                    </a>
+    <!-- Mobile Navigation Drawer & Backdrop (Opens smoothly from left side) -->
+    <div id="mobileSidebarBackdrop"
+        class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none lg:hidden"
+        onclick="toggleResponsiveNavbar(false)"
+        aria-hidden="true"></div>
+
+    <aside id="responsiveMobileNav"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile Navigation Sidebar"
+        class="fixed left-0 top-0 bottom-0 w-[300px] sm:w-[340px] max-w-[85vw] bg-white shadow-2xl z-50 flex flex-col transform -translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
+        
+        <!-- Sidebar Header: Brand + Close Button -->
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+            <a href="<?= url('/index.php') ?>" class="flex items-center gap-2.5" onclick="toggleResponsiveNavbar(false)">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-700 via-indigo-600 to-violet-700 flex items-center justify-center text-white shadow-md shadow-indigo-600/30">
+                    <svg class="w-5 h-5" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="6.5" y="2.5" width="19" height="27" rx="3.8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="13" y1="5.5" x2="19" y2="5.5" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity="0.8"/>
+                        <path d="M16 8L10.5 22H13.6L14.7 19H17.3L18.4 22H21.5L16 8Z" fill="white"/>
+                        <path d="M16 11.5L15.1 16.5H16.9L16 11.5Z" fill="#1e1b4b"/>
+                        <path d="M16.8 13.5L13.8 19H17L15 25L21 18H17.5L19.2 13.5H16.8Z" fill="#facc15"/>
+                        <circle cx="16" cy="26.5" r="1.1" fill="white" opacity="0.85"/>
+                    </svg>
                 </div>
+                <div>
+                    <div class="flex items-center gap-1 leading-none">
+                        <span class="text-sm font-black tracking-tight text-slate-900">ADKINE</span>
+                        <span class="text-sm font-black tracking-tight text-blue-600">MOBILE</span>
+                    </div>
+                    <span class="text-[9px] font-extrabold uppercase tracking-widest text-slate-400 block mt-0.5">Shopee &amp; Lab</span>
+                </div>
+            </a>
 
-                <nav class="divide-y divide-slate-100 pt-1 text-xs font-bold text-slate-700" aria-label="Mobile Categories">
-                    <a href="<?= url('/shop.php') ?>" class="flex items-center justify-between py-2.5 hover:text-blue-600 focus-visible:ring-2 focus-visible:ring-blue-600">
-                        <span class="flex items-center gap-2"><i data-lucide="grid" class="w-4 h-4 text-blue-600" aria-hidden="true"></i> All Products</span>
+            <button type="button" id="mobileSidebarCloseBtn" onclick="toggleResponsiveNavbar(false)"
+                aria-label="Close navigation menu"
+                class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition focus-visible:ring-2 focus-visible:ring-blue-600">
+                <i data-lucide="x" class="w-5 h-5" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <!-- Sidebar Scrollable Body -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5 touch-scroll overscroll-contain">
+            
+            <!-- Quick Action Buttons -->
+            <div class="grid grid-cols-2 gap-2">
+                <a href="<?= url('/repair-book.php') ?>" onclick="toggleResponsiveNavbar(false)"
+                    class="p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-center text-xs font-bold flex items-center justify-center gap-1.5 transition">
+                    <i data-lucide="wrench" class="w-4 h-4 text-emerald-600" aria-hidden="true"></i>
+                    <span>Book Repair</span>
+                </a>
+                <a href="<?= url('/repair-track.php') ?>" onclick="toggleResponsiveNavbar(false)"
+                    class="p-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 border border-blue-200 text-blue-800 text-center text-xs font-bold flex items-center justify-center gap-1.5 transition">
+                    <i data-lucide="search" class="w-4 h-4 text-blue-600" aria-hidden="true"></i>
+                    <span>Track Ticket</span>
+                </a>
+            </div>
+
+            <!-- Catalog Categories -->
+            <div>
+                <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">Product Catalog</div>
+                <nav class="space-y-1 text-xs font-bold text-slate-700" aria-label="Mobile Navigation Categories">
+                    <a href="<?= url('/shop.php') ?>" onclick="toggleResponsiveNavbar(false)" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 hover:text-blue-600 transition">
+                        <span class="flex items-center gap-2.5"><i data-lucide="grid" class="w-4 h-4 text-blue-600" aria-hidden="true"></i> All Products</span>
                         <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300" aria-hidden="true"></i>
                     </a>
-                    <a href="<?= url('/shop.php?category=smartphones') ?>" class="flex items-center justify-between py-2.5 hover:text-blue-600 focus-visible:ring-2 focus-visible:ring-blue-600">
-                        <span class="flex items-center gap-2"><i data-lucide="smartphone" class="w-4 h-4 text-slate-400" aria-hidden="true"></i> Smartphones</span>
+                    <a href="<?= url('/shop.php?category=smartphones') ?>" onclick="toggleResponsiveNavbar(false)" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 hover:text-blue-600 transition">
+                        <span class="flex items-center gap-2.5"><i data-lucide="smartphone" class="w-4 h-4 text-slate-400" aria-hidden="true"></i> Smartphones</span>
                         <span class="px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-600 text-[9px] font-black">HOT</span>
                     </a>
-                    <a href="<?= url('/shop.php?category=chargers-adapters') ?>" class="flex items-center justify-between py-2.5 hover:text-blue-600 focus-visible:ring-2 focus-visible:ring-blue-600">
-                        <span class="flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4 text-slate-400" aria-hidden="true"></i> Chargers &amp; Adapters</span>
+                    <a href="<?= url('/shop.php?category=chargers-adapters') ?>" onclick="toggleResponsiveNavbar(false)" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 hover:text-blue-600 transition">
+                        <span class="flex items-center gap-2.5"><i data-lucide="zap" class="w-4 h-4 text-amber-500" aria-hidden="true"></i> Chargers &amp; GaN</span>
                         <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300" aria-hidden="true"></i>
                     </a>
-                    <a href="<?= url('/shop.php?category=earphones-audio') ?>" class="flex items-center justify-between py-2.5 hover:text-blue-600 focus-visible:ring-2 focus-visible:ring-blue-600">
-                        <span class="flex items-center gap-2"><i data-lucide="headphones" class="w-4 h-4 text-slate-400" aria-hidden="true"></i> Earphones &amp; Audio</span>
+                    <a href="<?= url('/shop.php?category=earphones-audio') ?>" onclick="toggleResponsiveNavbar(false)" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 hover:text-blue-600 transition">
+                        <span class="flex items-center gap-2.5"><i data-lucide="headphones" class="w-4 h-4 text-indigo-500" aria-hidden="true"></i> Earphones &amp; Audio</span>
                         <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300" aria-hidden="true"></i>
                     </a>
-                    <a href="<?= url('/shop.php?category=smartwatches') ?>" class="flex items-center justify-between py-2.5 hover:text-blue-600 focus-visible:ring-2 focus-visible:ring-blue-600">
-                        <span class="flex items-center gap-2"><i data-lucide="watch" class="w-4 h-4 text-slate-400" aria-hidden="true"></i> Smartwatches</span>
+                    <a href="<?= url('/shop.php?category=smartwatches') ?>" onclick="toggleResponsiveNavbar(false)" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 hover:text-blue-600 transition">
+                        <span class="flex items-center gap-2.5"><i data-lucide="watch" class="w-4 h-4 text-blue-500" aria-hidden="true"></i> Smartwatches</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300" aria-hidden="true"></i>
+                    </a>
+                    <a href="<?= url('/shop.php?category=mobile-covers') ?>" onclick="toggleResponsiveNavbar(false)" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 hover:text-blue-600 transition">
+                        <span class="flex items-center gap-2.5"><i data-lucide="shield" class="w-4 h-4 text-purple-500" aria-hidden="true"></i> Cases &amp; Covers</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300" aria-hidden="true"></i>
+                    </a>
+                    <a href="<?= url('/shop.php?category=spare-parts') ?>" onclick="toggleResponsiveNavbar(false)" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 hover:text-blue-600 transition">
+                        <span class="flex items-center gap-2.5"><i data-lucide="cpu" class="w-4 h-4 text-emerald-500" aria-hidden="true"></i> OEM Spare Parts</span>
                         <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300" aria-hidden="true"></i>
                     </a>
                 </nav>
+            </div>
 
-                <?php if (!auth()): ?>
-                    <div class="pt-2 border-t border-slate-100">
-                        <a href="<?= url('/login.php') ?>" class="w-full py-2.5 rounded-xl bg-indigo-600 text-center text-xs font-bold text-white hover:bg-indigo-700 shadow-sm transition flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-blue-600">
-                            <i data-lucide="user" class="w-4 h-4" aria-hidden="true"></i>
-                            <span>Login / Register</span>
-                        </a>
-                    </div>
-                <?php endif; ?>
+            <!-- Quick Utility / Contact Links -->
+            <div class="pt-2 border-t border-slate-100">
+                <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">Customer Support</div>
+                <a href="tel:<?= preg_replace('/\s+/', '', setting('site_phone', '+91 98765 43210')) ?>" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-700 hover:text-amber-600 text-xs font-semibold">
+                    <i data-lucide="phone-call" class="w-4 h-4 text-amber-500"></i>
+                    <span><?= e(setting('site_phone', '+91 98765 43210')) ?></span>
+                </a>
+                <a href="<?= url('/admin/index.php') ?>" class="flex items-center gap-2.5 p-2 rounded-xl text-slate-700 hover:text-blue-600 text-xs font-semibold">
+                    <i data-lucide="shield" class="w-4 h-4 text-slate-400"></i>
+                    <span>Staff ERP Portal</span>
+                </a>
             </div>
         </div>
-    </header>
+
+        <!-- Sidebar Footer / Auth Area: Sign In -->
+        <div class="p-4 border-t border-slate-100 bg-slate-50/80">
+            <?php if (auth()): ?>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+                            <?= strtoupper(substr(auth()['full_name'], 0, 1)) ?>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="font-bold text-xs text-slate-900 truncate"><?= e(auth()['full_name']) ?></div>
+                            <div class="text-[10px] text-slate-400 truncate"><?= e(auth()['email']) ?></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 pt-1 text-xs font-bold">
+                        <a href="<?= url('/orders.php') ?>" onclick="toggleResponsiveNavbar(false)" class="p-2 rounded-lg bg-white border border-slate-200 text-center text-slate-700 hover:text-blue-600">
+                            My Orders
+                        </a>
+                        <a href="<?= url('/account.php') ?>" onclick="toggleResponsiveNavbar(false)" class="p-2 rounded-lg bg-white border border-slate-200 text-center text-slate-700 hover:text-blue-600">
+                            Profile
+                        </a>
+                    </div>
+                    <form action="<?= url('/logout.php') ?>" method="POST" class="pt-1">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="w-full py-2 rounded-lg text-xs text-rose-600 hover:bg-rose-50 font-bold text-center transition flex items-center justify-center gap-1.5">
+                            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </form>
+                </div>
+            <?php else: ?>
+                <a href="<?= url('/login.php') ?>" onclick="toggleResponsiveNavbar(false)"
+                    class="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-800 hover:from-indigo-700 hover:to-indigo-900 text-center text-xs font-bold text-white shadow-md shadow-indigo-600/20 transition flex items-center justify-center gap-2">
+                    <i data-lucide="user" class="w-4 h-4" aria-hidden="true"></i>
+                    <span>Sign In</span>
+                </a>
+            <?php endif; ?>
+        </div>
+    </aside>
 
     <!-- Flash Notifications Component (WCAG 2.2 Live Region) -->
     <?php

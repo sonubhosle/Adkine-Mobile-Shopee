@@ -37,11 +37,9 @@
             border-radius: 19px;
             transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
             filter: brightness(0.88);
+              transform: scale(1);
         }
-        .hero-offer-card:hover img {
-            transform: scale(1.05);
-            filter: brightness(0.95);
-        }
+ 
         .hero-card-overlay {
             position: absolute;
             inset: 0;
@@ -144,7 +142,7 @@
             <div class="hero-masonry">
                 <!-- 1. Smartphones Card -->
                 <div class="hero-offer-card hero-offer-phone group">
-                    <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=80" alt="Shop smartphones" fetchpriority="high">
+                    <img src="https://i.postimg.cc/q7Gw9WrD/Gemini-Generated-Image-84e9dn84e9dn84e9.png" alt="Shop smartphones" fetchpriority="high">
                     <div class="hero-card-overlay"></div>
                     <div class="absolute bottom-0 left-0 right-0 z-10 p-3 sm:p-4">
                         <span class="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-blue-300 drop-shadow-sm mb-0.5">
@@ -163,7 +161,7 @@
 
                 <!-- 2. Repairs Card -->
                 <div class="hero-offer-card hero-offer-repair group">
-                    <img src="https://images.unsplash.com/photo-1588508065123-287b28e013da?auto=format&fit=crop&w=500&q=80" alt="Book a phone repair" loading="lazy" decoding="async">
+                    <img src="https://i.postimg.cc/wjCn6CSz/Gemini-Generated-Image-ozemd5ozemd5ozem.png" alt="Book a phone repair" loading="lazy" decoding="async">
                     <div class="hero-card-overlay"></div>
                     <div class="absolute bottom-0 left-0 right-0 z-10 p-3 sm:p-4">
                         <span class="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-emerald-300 drop-shadow-sm mb-0.5">
@@ -182,7 +180,7 @@
 
                 <!-- 3. Audio & Gadgets Card -->
                 <div class="hero-offer-card hero-offer-audio group">
-                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" alt="Browse headphones and audio" loading="lazy" decoding="async">
+                    <img src="https://i.postimg.cc/zvGBXb47/Gemini-Generated-Image-asgmyiasgmyiasgm.png" loading="lazy" decoding="async">
                     <div class="hero-card-overlay"></div>
                     <div class="absolute bottom-0 left-0 right-0 z-10 p-3 sm:p-4">
                         <span class="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-violet-300 drop-shadow-sm mb-0.5">
@@ -201,7 +199,7 @@
 
                 <!-- 4. Accessories Card -->
                 <div class="hero-offer-card hero-offer-accessories group">
-                    <img src="https://images.unsplash.com/photo-1605236453806-6ff36851218e?auto=format&fit=crop&w=600&q=80" alt="Browse phone accessories" loading="lazy" decoding="async">
+                    <img src="https://i.postimg.cc/4xZ0K6WY/Gemini-Generated-Image-qawmpxqawmpxqawm.png" alt="Browse phone accessories" loading="lazy" decoding="async">
                     <div class="hero-card-overlay"></div>
                     <div class="absolute bottom-0 left-0 right-0 z-10 p-3 sm:p-4">
                         <span class="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-amber-300 drop-shadow-sm mb-0.5">

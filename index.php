@@ -116,29 +116,29 @@ $newArrivals = db_fetch_all($sqlNewArrivals);
             </a>
         </div>
 
-        <!-- 5 Category Cards Per Row: Left Image, Name & Button Below -->
+        <!-- 5 Category Cards Per Row: Mobile (Image on Top, Label Middle, Button Below) | Desktop (Horizontal) -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5">
             <?php foreach ($categories as $cat): ?>
                 <a href="<?= url('/shop.php?category=' . $cat['slug']) ?>" 
-                   class="group bg-white rounded-2xl border border-slate-200/80 hover:border-blue-400/80 shadow-2xs hover:shadow-lg hover:shadow-blue-500/10 p-3 transition-all duration-300 flex items-center gap-3 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-blue-600 overflow-hidden">
+                   class="group bg-white rounded-2xl border border-slate-200/80 hover:border-blue-400/80 shadow-2xs hover:shadow-lg hover:shadow-blue-500/10 p-3 sm:p-3.5 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2.5 sm:gap-3 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-blue-600 overflow-hidden">
                     
-                    <!-- Small Category Image in Left -->
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-slate-50 border border-slate-100 flex items-center justify-center p-1 shrink-0 group-hover:scale-105 transition-transform duration-300">
+                    <!-- Category Image: On Top in Mobile, Left in Desktop -->
+                    <div class="w-16 h-16 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl overflow-hidden bg-slate-50 border border-slate-100 flex items-center justify-center p-1.5 shrink-0 group-hover:scale-105 transition-transform duration-300">
                         <?php if (!empty($cat['image']) && file_exists(__DIR__ . '/uploads/categories/' . $cat['image'])): ?>
                             <img src="<?= url('/uploads/categories/' . $cat['image']) ?>" alt="<?= e($cat['name']) ?>" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-lg">
                         <?php else: ?>
                             <div class="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400 rounded-lg">
-                                <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                                <i data-lucide="layout-grid" class="w-6 h-6"></i>
                             </div>
                         <?php endif; ?>
                     </div>
 
-                    <!-- Category Name & Below Name Button -->
-                    <div class="min-w-0 flex-1 flex flex-col justify-center">
-                        <h3 class="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-blue-600 transition-colors truncate" title="<?= e($cat['name']) ?>">
+                    <!-- Category Name (Label) & Below Button -->
+                    <div class="min-w-0 flex-1 flex flex-col items-center sm:items-start justify-center w-full">
+                        <h3 class="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1 sm:truncate text-center sm:text-left w-full" title="<?= e($cat['name']) ?>">
                             <?= e($cat['name']) ?>
                         </h3>
-                        <span class="inline-flex items-center gap-1 mt-1.5 px-2.5 py-1 rounded-lg bg-slate-900 group-hover:bg-blue-600 text-white font-bold text-[10px] sm:text-[11px] w-fit transition-colors shadow-2xs">
+                        <span class="inline-flex items-center justify-center gap-1 mt-2 sm:mt-1.5 px-3 sm:px-2.5 py-1.5 sm:py-1 rounded-xl sm:rounded-lg bg-slate-900 group-hover:bg-blue-600 text-white font-bold text-[10px] sm:text-[11px] w-full sm:w-fit transition-colors shadow-2xs">
                             <span>Explore</span>
                             <i data-lucide="arrow-right" class="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true"></i>
                         </span>
@@ -241,7 +241,7 @@ $newArrivals = db_fetch_all($sqlNewArrivals);
         <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px] opacity-25"></div>
     </div>
 
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="relative  px-4 sm:px-6 lg:px-8">
         <!-- Top Dual Trust Pill Badge -->
         <div class="flex flex-wrap items-center gap-2.5 mb-6">
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500/15 to-teal-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold tracking-wide backdrop-blur-md shadow-xs shadow-emerald-950">

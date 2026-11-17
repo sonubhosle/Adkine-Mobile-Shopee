@@ -192,25 +192,42 @@
     <!-- Global Responsive Navigation, Cart Drawer & WCAG Focus Trap Scripts -->
     <script>
         let lastFocusedBeforeCartDrawer = null;
+        let lastFocusedBeforeMobileNav = null;
 
-        function toggleResponsiveNavbar() {
-            const nav = document.getElementById('responsiveMobileNav');
+        function toggleResponsiveNavbar(forceOpen = null) {
+            const sidebar = document.getElementById('responsiveMobileNav');
+            const backdrop = document.getElementById('mobileSidebarBackdrop');
             const icon = document.getElementById('navHamburgerIcon');
             const btn = document.getElementById('mobileNavToggleBtn');
-            if (!nav) return;
-            const isHidden = nav.classList.contains('hidden');
-            if (isHidden) {
-                nav.classList.remove('hidden');
-                nav.classList.add('animate-nav-down');
+            const closeBtn = document.getElementById('mobileSidebarCloseBtn');
+            if (!sidebar || !backdrop) return;
+
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+            const shouldOpen = forceOpen !== null ? forceOpen : !isOpen;
+
+            if (shouldOpen) {
+                lastFocusedBeforeMobileNav = document.activeElement;
+                backdrop.classList.remove('opacity-0', 'pointer-events-none');
+                sidebar.classList.remove('-translate-x-full');
+                document.body.style.overflow = 'hidden';
                 if (icon) icon.setAttribute('data-lucide', 'x');
                 if (btn) btn.setAttribute('aria-expanded', 'true');
+                setTimeout(() => {
+                    if (closeBtn) closeBtn.focus();
+                }, 100);
             } else {
-                nav.classList.add('hidden');
-                nav.classList.remove('animate-nav-down');
+                backdrop.classList.add('opacity-0', 'pointer-events-none');
+                sidebar.classList.add('-translate-x-full');
+                document.body.style.overflow = '';
                 if (icon) icon.setAttribute('data-lucide', 'menu');
                 if (btn) btn.setAttribute('aria-expanded', 'false');
+                if (lastFocusedBeforeMobileNav && typeof lastFocusedBeforeMobileNav.focus === 'function') {
+                    lastFocusedBeforeMobileNav.focus();
+                }
             }
-            lucide.createIcons();
+            if (window.lucide) {
+                lucide.createIcons();
+            }
         }
 
         function toggleCartDrawer(open) {
@@ -295,8 +312,8 @@
 
                 // 3. Close Mobile Navigation Menu
                 const mobileNav = document.getElementById('responsiveMobileNav');
-                if (mobileNav && !mobileNav.classList.contains('hidden')) {
-                    toggleResponsiveNavbar();
+                if (mobileNav && !mobileNav.classList.contains('-translate-x-full')) {
+                    toggleResponsiveNavbar(false);
                     const navBtn = document.getElementById('mobileNavToggleBtn');
                     if (navBtn) navBtn.focus();
                     return;

@@ -497,17 +497,77 @@ $newArrivals = db_fetch_all($sqlNewArrivals);
 </section>
 
 <!-- Brand Carousel -->
-<section class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-6">Authorized Brands</h3>
-        <div class="flex flex-wrap justify-center items-center gap-8 sm:gap-12 opacity-75 grayscale hover:grayscale-0 transition-all duration-300">
-            <?php foreach ($brands as $b): ?>
-                <a href="<?= url('/shop.php?brand=' . $b['slug']) ?>" class="font-extrabold text-base tracking-wider text-slate-800 hover:text-blue-600 transition">
-                    <?= e($b['name']) ?>
-                </a>
-            <?php endforeach; ?>
+<section class="py-12 bg-gradient-to-r from-gray-50 via-white to-gray-50">
+    <div class="px-10 sm:px-6 lg:px-8 relative">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Brands</h2>
+            <a href="<?= url('/shop.php') ?>" class="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+                <span>See More</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
         </div>
+        <!-- Carousel container -->
+        <!-- Carousel container with infinite auto‑slide -->
+<div class="relative overflow-hidden py-4">
+  <style>
+    @keyframes brandScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-brand-scroll {
+      display: flex;
+      animation: brandScroll 20s linear infinite;
+    }
+    .brand-card {
+      flex: 0 0 auto;
+      width: 10rem; /* smaller card */
+      margin-right: 1rem;
+    }
+  </style>
+  <div class="animate-brand-scroll">
+    <?php foreach ($brands as $b): ?>
+      <?php
+        $bLogo = !empty($b['logo']) ? basename($b['logo']) : '';
+        $hasLogo = $bLogo && file_exists(__DIR__ . '/uploads/brands/' . $bLogo);
+      ?>
+      <a href="<?= url('/shop.php?brand=' . $b['slug']) ?>"
+         class="brand-card group bg-white rounded-xl border border-gray-200 hover:border-blue-500/80 shadow-sm hover:shadow-lg transition-all duration-300 text-center p-4"
+         title="<?= e($b['name']) ?>">
+        <?php if ($hasLogo): ?>
+          <img src="<?= url('/uploads/brands/' . e($bLogo)) ?>"
+               alt="<?= e($b['name']) ?>"
+               class="mx-auto h-12 max-w-[80px] object-contain transition-all duration-300 mb-2">
+        <?php else: ?>
+          <span class="block text-sm font-medium text-slate-800 transition-colors mb-2"><?= e($b['name']) ?></span>
+        <?php endif; ?>
+        <span class="block text-xs text-slate-500 transition-colors">Brand</span>
+      </a>
+    <?php endforeach; ?>
+    <!-- duplicate items for seamless loop -->
+    <?php foreach ($brands as $b): ?>
+      <?php
+        $bLogo = !empty($b['logo']) ? basename($b['logo']) : '';
+        $hasLogo = $bLogo && file_exists(__DIR__ . '/uploads/brands/' . $bLogo);
+      ?>
+      <a href="<?= url('/shop.php?brand=' . $b['slug']) ?>"
+         class="brand-card group bg-white rounded-xl border border-gray-200 hover:border-blue-500/80 shadow-sm hover:shadow-lg transition-all duration-300 text-center p-4"
+         title="<?= e($b['name']) ?>">
+        <?php if ($hasLogo): ?>
+          <img src="<?= url('/uploads/brands/' . e($bLogo)) ?>"
+               alt="<?= e($b['name']) ?>"
+               class="mx-auto h-12 max-w-[80px] object-contain transition-all duration-300 mb-2">
+        <?php else: ?>
+          <span class="block text-sm font-medium text-slate-800 transition-colors mb-2"><?= e($b['name']) ?></span>
+        <?php endif; ?>
+        <span class="block text-xs text-slate-500 transition-colors">Brand</span>
+      </a>
+    <?php endforeach; ?>
+  </div>
+</div>
+
     </div>
 </section>
+
+
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

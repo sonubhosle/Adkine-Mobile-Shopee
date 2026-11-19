@@ -392,7 +392,7 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
     </a>
 
     <!-- Top Micro Announcement & Utility Bar with Live Scroller -->
-    <div class="bg-slate-950 text-slate-300 text-xs py-2 border-b border-slate-800/80 overflow-hidden relative z-40 w-full">
+    <div class="sticky top-0 z-50 bg-slate-950 text-slate-300 text-xs py-2 border-b border-slate-800/80 overflow-hidden w-full">
         <div class=" px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-2">
             
             <!-- Continuous Marquee Live Scroller with WCAG Pause Control -->

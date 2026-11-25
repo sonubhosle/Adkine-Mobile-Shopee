@@ -10,7 +10,7 @@ $errors = [];
 $old = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
 
     $name = trim((string)($_POST['name'] ?? ''));
     $sku = strtoupper(trim((string)($_POST['sku'] ?? '')));

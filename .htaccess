@@ -3,9 +3,8 @@ DirectoryIndex index.php
 ErrorDocument 404 /MobileShop2/404.php
 
 # Protect sensitive files and directories
-<FilesMatch "\.(env|sql|log|sh|bak|json|lock)$">
-    Order allow,deny
-    Deny from all
+<FilesMatch "(^\.|\.(env|sql|log|sh|bak|json|lock)$|^config\.local\.php$">
+    Require all denied
 </FilesMatch>
 
 RewriteEngine On
@@ -86,6 +85,12 @@ RewriteRule ^(.*)$ $1.php [L,QSA]
 
 # ─── Cache-Control Headers ───────────────────────────────────────────────────
 <IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), geolocation=(), microphone=()"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+
     # Static Assets: 1 month cache with immutable hint
     <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|webp|js|css|swf|svg|woff|woff2|ttf|eot)$">
         Header set Cache-Control "max-age=2592000, public"

@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
 
 // ── POST: Toggle customer active status ──────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'toggle_status') {
-    verify_csrf();
+    require_csrf();
     $id = (int)($_POST['id'] ?? 0);
     if ($id > 0) {
         db_query("UPDATE users SET is_active = NOT is_active, updated_at = NOW() WHERE id = ?", [$id]);

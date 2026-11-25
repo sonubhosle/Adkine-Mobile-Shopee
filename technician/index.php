@@ -126,6 +126,7 @@ require_once __DIR__ . '/../includes/technician-header.php';
     </div>
 </div>
 </main>
+<?php require __DIR__ . '/../includes/language-script.php'; ?>
 <script>lucide.createIcons();</script>
 </body>
 </html>

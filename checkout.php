@@ -102,7 +102,7 @@ require_once __DIR__ . '/includes/header.php';
                             <input type="text" id="new_line2" name="new_address_line2" placeholder="e.g. Near Metro Station" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus-visible:ring-2 focus-visible:ring-blue-600">
                         </div>
 
-                        <div class="grid grid-cols-3 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div>
                                 <label for="new_city" class="block text-[11px] font-bold text-slate-700 mb-1">City</label>
                                 <input type="text" id="new_city" name="new_city" placeholder="City" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus-visible:ring-2 focus-visible:ring-blue-600">

@@ -35,7 +35,7 @@ $errors = [];
 
 // ── POST: Update staff ────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
     $action = $_POST['action'] ?? 'update';
 
     // ── Reset Password only ──────────────────────────────────────────────────

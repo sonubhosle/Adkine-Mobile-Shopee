@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
 
 // ── POST: Toggle status ───────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
     $action = $_POST['action'] ?? '';
     $id     = (int)($_POST['id'] ?? 0);
 

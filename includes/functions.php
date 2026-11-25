@@ -2,6 +2,55 @@
 /**
  * MobileShopFlat — Global Helper Functions
  */
+require_once __DIR__ . '/translations.php';
+
+function current_language(): string
+{
+    return ($_SESSION['preferred_language'] ?? 'en') === 'mr' ? 'mr' : 'en';
+}
+
+function t(string $text): string
+{
+    if (current_language() !== 'mr') {
+        return $text;
+    }
+
+    return mobile_shop_translations()[$text] ?? $text;
+}
+
+function language_url(string $language): string
+{
+    $language = $language === 'mr' ? 'mr' : 'en';
+    $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+    $parts = parse_url($requestUri);
+    $path = isset($parts['path']) && str_starts_with($parts['path'], '/') ? $parts['path'] : '/';
+    $query = [];
+    if (!empty($parts['query'])) {
+        parse_str($parts['query'], $query);
+    }
+    $query['lang'] = $language;
+
+    return $path . '?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
+}
+
+function language_switcher(string $class = ''): string
+{
+    $language = current_language();
+    $class = trim($class);
+    $classAttribute = $class === '' ? '' : ' class="' . e($class) . '"';
+    $html = '<nav aria-label="' . e($language === 'mr' ? 'भाषा निवडा' : 'Choose language') . '"' . $classAttribute . '>';
+
+    foreach (['en' => 'English', 'mr' => 'मराठी'] as $code => $label) {
+        $isActive = $language === $code;
+        $html .= '<a href="' . e(language_url($code)) . '" lang="' . e($code) . '" hreflang="' . e($code) . '"'
+            . ($isActive ? ' aria-current="true"' : '')
+            . ' class="rounded-md px-2 py-1 text-xs font-bold transition '
+            . ($isActive ? 'bg-blue-100 text-blue-700' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800')
+            . '">' . e($label) . '</a>';
+    }
+
+    return $html . '</nav>';
+}
 
 // ─── Output Escaping ─────────────────────────────────────────────────────────
 
@@ -70,6 +119,21 @@ function verify_csrf(): bool
         return false;
     }
     return hash_equals($_SESSION['_csrf_token'], $token);
+}
+
+/** Stop state-changing requests that do not carry the current CSRF token. */
+function require_csrf(): void
+{
+    if (verify_csrf()) {
+        return;
+    }
+
+    if (is_ajax()) {
+        json_response(['status' => false, 'message' => 'Invalid security token. Refresh the page and try again.'], 419);
+    }
+
+    set_flash('error', 'Your session expired. Please try again.');
+    redirect('/index.php');
 }
 
 // ─── Settings (cached DB lookup with persistent file cache) ─────────────

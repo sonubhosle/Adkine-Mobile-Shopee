@@ -3,7 +3,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
 
 // ── Handle POST actions ───────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
     $action = $_POST['action'] ?? '';
 
     if ($action === 'create') {

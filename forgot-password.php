@@ -36,39 +36,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user) {
         $code = (string)random_int(100000, 999999);
         $storeName = htmlspecialchars(SMTP_FROM_NAME, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        $htmlBody = '<!doctype html><html lang="en"><head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+        $htmlBody = '<!doctype html><html lang="' . e(current_language()) . '"><head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
             . '<body style="margin:0;padding:0;background:#f3f6fb;font-family:Arial,Helvetica,sans-serif;color:#172033;">'
             . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f3f6fb;padding:36px 12px;">'
             . '<tr><td align="center"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;background:#ffffff;border:1px solid #e6eaf0;border-radius:18px;overflow:hidden;">'
             . '<tr><td style="padding:26px 32px;background:#111827;">'
             . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>'
             . '<td><div style="font-size:19px;line-height:1.3;font-weight:700;letter-spacing:.2px;color:#ffffff;">' . $storeName . '</div>'
-            . '<div style="margin-top:5px;font-size:11px;line-height:1.4;font-weight:600;letter-spacing:1.5px;color:#a5b4fc;">ACCOUNT SECURITY</div></td>'
-            . '<td align="right" style="font-size:12px;color:#cbd5e1;">PASSWORD RESET</td></tr></table></td></tr>'
+            . '<div style="margin-top:5px;font-size:11px;line-height:1.4;font-weight:600;letter-spacing:1.5px;color:#a5b4fc;">' . e(t('ACCOUNT SECURITY')) . '</div></td>'
+            . '<td align="right" style="font-size:12px;color:#cbd5e1;">' . e(t('PASSWORD RESET')) . '</td></tr></table></td></tr>'
             . '<tr><td style="padding:34px 32px 30px;">'
-            . '<div style="display:inline-block;padding:7px 11px;background:#eef2ff;border-radius:20px;color:#4338ca;font-size:11px;font-weight:700;letter-spacing:.5px;">SECURE VERIFICATION</div>'
-            . '<h1 style="margin:18px 0 10px;font-size:25px;line-height:1.25;color:#111827;">Reset your password</h1>'
-            . '<p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#526078;">We received a request to reset the password for your account. Enter this one-time code to continue:</p>'
+            . '<div style="display:inline-block;padding:7px 11px;background:#eef2ff;border-radius:20px;color:#4338ca;font-size:11px;font-weight:700;letter-spacing:.5px;">' . e(t('SECURE VERIFICATION')) . '</div>'
+            . '<h1 style="margin:18px 0 10px;font-size:25px;line-height:1.25;color:#111827;">' . e(t('Reset your password')) . '</h1>'
+            . '<p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#526078;">' . e(t('We received a request to reset the password for your account. Enter this one-time code to continue:')) . '</p>'
             . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f8faff;border:1px solid #dfe7fb;border-radius:14px;">'
             . '<tr><td align="center" style="padding:22px 14px 20px;">'
-            . '<div style="margin-bottom:10px;font-size:11px;font-weight:700;letter-spacing:1.4px;color:#64748b;">YOUR RESET CODE</div>'
+            . '<div style="margin-bottom:10px;font-size:11px;font-weight:700;letter-spacing:1.4px;color:#64748b;">' . e(t('YOUR RESET CODE')) . '</div>'
             . '<div style="font-family:Arial,Helvetica,sans-serif;font-size:36px;line-height:1.25;font-weight:700;letter-spacing:11px;color:#273cba;padding-left:11px;">' . $code . '</div>'
             . '</td></tr></table>'
             . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:22px;"><tr>'
             . '<td width="28" valign="top" style="padding-top:2px;color:#4f46e5;font-size:16px;">&#9432;</td>'
-            . '<td style="font-size:13px;line-height:1.65;color:#526078;">This code expires in <strong style="color:#273044;">15 minutes</strong>. Keep it private; our team will never ask you to share it.</td>'
+            . '<td style="font-size:13px;line-height:1.65;color:#526078;">' . e(t('This code expires in')) . ' <strong style="color:#273044;">15</strong> ' . e(t('minutes')) . '. ' . e(t('Keep it private; our team will never ask you to share it.')) . '</td>'
             . '</tr></table>'
-            . '<p style="margin:22px 0 0;padding-top:18px;border-top:1px solid #edf0f5;font-size:12px;line-height:1.7;color:#7a8699;">Didn\'t request a password reset? You can ignore this email. Your password will remain unchanged.</p>'
+            . '<p style="margin:22px 0 0;padding-top:18px;border-top:1px solid #edf0f5;font-size:12px;line-height:1.7;color:#7a8699;">' . e(t('Didn\'t request a password reset? You can ignore this email. Your password will remain unchanged.')) . '</p>'
             . '</td></tr><tr><td align="center" style="padding:18px 24px;background:#f8fafc;border-top:1px solid #edf0f5;">'
             . '<div style="font-size:12px;font-weight:600;color:#526078;">' . $storeName . '</div>'
-            . '<div style="margin-top:5px;font-size:11px;color:#98a2b3;">Automated account security message · Please do not reply</div>'
+            . '<div style="margin-top:5px;font-size:11px;color:#98a2b3;">' . e(t('Automated account security message · Please do not reply')) . '</div>'
             . '</td></tr></table></td></tr></table></body></html>';
 
         try {
             send_smtp_email(
                 $email,
-                'Your password reset code',
-                "Your password reset code is {$code}.\n\nThis code expires in 15 minutes. Do not share it with anyone. If you did not request a password reset, you can ignore this email.",
+                t('Your password reset code'),
+                t('Your password reset code is') . " {$code}.\n\n" . t('This code expires in') . ' 15 ' . t('minutes') . '. ' . t('Do not share it with anyone.') . ' ' . t('If you did not request a password reset, you can ignore this email.'),
                 $htmlBody
             );
         } catch (RuntimeException $exception) {

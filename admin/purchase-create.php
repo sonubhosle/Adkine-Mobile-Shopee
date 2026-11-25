@@ -3,7 +3,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
 
 // ── Handle PO Creation ────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
 
     $supplier_id    = (int)($_POST['supplier_id'] ?? 0);
     $purchase_date  = trim($_POST['purchase_date'] ?? date('Y-m-d'));

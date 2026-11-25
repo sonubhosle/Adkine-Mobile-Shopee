@@ -3,7 +3,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
 
 // ── Handle Refund Processing ──────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
     $order_id = (int)($_POST['order_id'] ?? 0);
     $amount   = (float)($_POST['amount'] ?? 0);
     $reason   = trim($_POST['reason'] ?? '');

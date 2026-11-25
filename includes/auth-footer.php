@@ -14,6 +14,7 @@
         </div>
     </div>
 
+    <?php require __DIR__ . '/language-script.php'; ?>
     <script>lucide.createIcons();</script>
 </body>
 </html>

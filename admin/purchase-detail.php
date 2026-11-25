@@ -27,7 +27,7 @@ if (!$purchase) {
 
 // ── Handle Status Actions ─────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
     $action = $_POST['action'] ?? '';
 
     if ($action === 'receive_stock' && $purchase['status'] === 'draft') {

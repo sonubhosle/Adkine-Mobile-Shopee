@@ -61,7 +61,7 @@ function handle_brand_logo_upload(array $file, array &$errors): ?string {
 
 // Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
     $action = $_POST['action'] ?? '';
     $errors = [];
 

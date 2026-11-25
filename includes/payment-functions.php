@@ -7,13 +7,20 @@ require_once __DIR__ . '/config.php';
 
 function razorpay_is_configured(): bool
 {
-    return defined('RAZORPAY_KEY_ID') && !empty(RAZORPAY_KEY_ID) && defined('RAZORPAY_KEY_SECRET') && !empty(RAZORPAY_KEY_SECRET);
+    if (!defined('RAZORPAY_KEY_ID') || !defined('RAZORPAY_KEY_SECRET') || RAZORPAY_KEY_ID === '' || RAZORPAY_KEY_SECRET === '') {
+        return false;
+    }
+
+    return APP_ENV !== 'production' || str_starts_with(RAZORPAY_KEY_ID, 'rzp_live_');
 }
 
 function razorpay_create_order(string $receiptId, float $amount, array $notes = []): array
 {
     if (!razorpay_is_configured()) {
-        throw new RuntimeException('Razorpay is not configured.');
+        throw new RuntimeException('Online payments are not configured. Please choose Cash on Delivery or contact support.');
+    }
+    if (!function_exists('curl_init')) {
+        throw new RuntimeException('The server payment client is unavailable. Please contact support.');
     }
 
     $amountInPaise = (int)round($amount * 100);
@@ -31,7 +38,8 @@ function razorpay_create_order(string $receiptId, float $amount, array $notes = 
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // For local XAMPP compatibility
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -39,15 +47,7 @@ function razorpay_create_order(string $receiptId, float $amount, array $notes = 
     curl_close($ch);
 
     if ($err || $httpCode < 200 || $httpCode >= 300) {
-        // Fallback for offline or simulated test environments
-        return [
-            'id' => 'order_' . bin2hex(random_bytes(8)),
-            'entity' => 'order',
-            'amount' => $amountInPaise,
-            'currency' => 'INR',
-            'receipt' => $receiptId,
-            'status' => 'created',
-        ];
+        throw new RuntimeException('Unable to start the Razorpay payment. Please try again or choose Cash on Delivery.');
     }
 
     $data = json_decode($response, true);

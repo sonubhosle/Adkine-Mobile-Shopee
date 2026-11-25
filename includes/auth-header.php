@@ -8,27 +8,18 @@ session_init();
 $minimal = $minimal ?? false;
 ?>
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="<?= e(current_language() === 'mr' ? 'mr' : 'en') ?>" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
-    <title><?= isset($pageTitle) ? e($pageTitle) . ' | ' . e(setting('site_name', 'Adkine Mobile Shopee')) : 'Authentication | ' . e(setting('site_name', 'Adkine Mobile Shopee')) ?></title>
+    <title><?= isset($pageTitle) ? e(t($pageTitle)) . ' | ' . e(setting('site_name', 'Adkine Mobile Shopee')) : e(t('Authentication')) . ' | ' . e(setting('site_name', 'Adkine Mobile Shopee')) ?></title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'] }
-                }
-            }
-        }
-    </script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="<?= e(asset('/public/assets/app.css')) ?>">
+    <script src="https://unpkg.com/lucide@0.468.0"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -87,10 +78,13 @@ $minimal = $minimal ?? false;
     </style>
 </head>
 <body class="h-full lg:h-screen lg:overflow-hidden bg-slate-950 antialiased selection:bg-blue-500 selection:text-white">
+    <div class="absolute top-3 right-3 z-50 rounded-lg border border-slate-200 bg-white p-1">
+        <?= language_switcher('flex items-center gap-1') ?>
+    </div>
 
     <!-- WCAG 2.2 Skip to Auth Form -->
     <a href="#authFormContent" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[99999] focus:px-4 focus:py-2.5 focus:bg-blue-600 focus:text-white focus:font-bold focus:text-xs focus:rounded-xl focus:shadow-2xl focus:outline-none focus:ring-4 focus:ring-white">
-        Skip to authentication form
+        <?= e(t('Skip to authentication form')) ?>
     </a>
 
     <div class="h-full lg:h-screen grid grid-cols-1 <?= $minimal ? '' : 'lg:grid-cols-12' ?> lg:overflow-hidden">

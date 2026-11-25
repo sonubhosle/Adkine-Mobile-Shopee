@@ -8,7 +8,7 @@ require_once __DIR__ . '/../includes/inventory-functions.php';
 
 // Handle Stock Adjustment POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
     $productId = (int)($_POST['product_id'] ?? 0);
     $variantId = !empty($_POST['variant_id']) ? (int)$_POST['variant_id'] : null;
     $type = trim((string)($_POST['type'] ?? 'in'));

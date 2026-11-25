@@ -1,214 +1,122 @@
 <?php
-require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/functions.php';
+/** @var PDO $pdo */
+$pageTitle = 'Categories';
+require_once __DIR__ . '/../includes/admin-header.php';
 
-// Ensure admin authentication (placeholder, adjust as needed)
-if (!is_admin()) {
-    header('Location: /login.php');
-    exit;
+function category_slug(string $value): string
+{
+    return strtolower(trim((string) preg_replace('/[^A-Za-z0-9]+/', '-', $value), '-'));
 }
 
-$errors = [];
-$success = '';
+function store_category_image(array $upload): ?string
+{
+    if (($upload['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) return null;
+    if (($upload['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) throw new RuntimeException('The category image could not be uploaded.');
+    if (($upload['size'] ?? 0) > 5 * 1024 * 1024) throw new RuntimeException('Category images must be 5 MB or smaller.');
 
-// Handle form submissions
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($upload['tmp_name']);
+    $extensions = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
+    if (!isset($extensions[$mime])) throw new RuntimeException('Use a JPG, PNG, WebP, or GIF image.');
+
+    $directory = __DIR__ . '/../uploads/categories';
+    if (!is_dir($directory) && !mkdir($directory, 0775, true) && !is_dir($directory)) throw new RuntimeException('The category image folder is not available.');
+
+    $filename = 'cat_' . bin2hex(random_bytes(8)) . '.' . $extensions[$mime];
+    if (!move_uploaded_file($upload['tmp_name'], $directory . '/' . $filename)) throw new RuntimeException('The category image could not be saved.');
+    return $filename;
+}
+
+function remove_category_image(?string $filename): void
+{
+    if (!$filename) return;
+    $path = __DIR__ . '/../uploads/categories/' . basename($filename);
+    if (is_file($path)) @unlink($path);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // CSRF validation
-    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
-        $errors[] = 'Invalid CSRF token.';
-    } else {
-        $action = $_POST['action'] ?? '';
-        $name = trim($_POST['name'] ?? '');
-        $slug = trim($_POST['slug'] ?? '');
-        $categoryId = intval($_POST['id'] ?? 0);
-        $isActive = isset($_POST['is_active']) ? 1 : 0;
+    require_csrf();
+    $action = (string) ($_POST['action'] ?? '');
 
-        // Basic validation
-        if ($name === '') $errors[] = 'Category name is required.';
-        if ($slug === '') $slug = strtolower(preg_replace('/[^a-z0-9]+/', '-', $name));
+    try {
+        if ($action === 'store' || $action === 'update') {
+            $id = (int) ($_POST['id'] ?? 0);
+            $name = trim((string) ($_POST['name'] ?? ''));
+            $slug = trim((string) ($_POST['slug'] ?? ''));
+            $description = trim((string) ($_POST['description'] ?? '')) ?: null;
+            $isActive = isset($_POST['is_active']) ? 1 : 0;
+            if ($name === '') throw new RuntimeException('Category name is required.');
 
-        // Process image upload if present
-        $imageName = null;
-        if (!empty($_FILES['image']['name'])) {
-            $allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-            if (!in_array($_FILES['image']['type'], $allowed)) {
-                $errors[] = 'Unsupported image type.';
+            $slug = $slug === '' ? category_slug($name) : category_slug($slug);
+            if ($slug === '') throw new RuntimeException('Enter a valid category name or slug.');
+
+            $duplicate = db_fetch_value('SELECT id FROM categories WHERE slug = ?' . ($action === 'update' ? ' AND id != ?' : ''), $action === 'update' ? [$slug, $id] : [$slug]);
+            if ($duplicate) throw new RuntimeException('That category slug is already in use.');
+
+            if ($action === 'store') {
+                $image = store_category_image($_FILES['image'] ?? []);
+                db_query('INSERT INTO categories (name, slug, description, image, is_active) VALUES (?, ?, ?, ?, ?)', [$name, $slug, $description, $image, $isActive]);
+                set_flash('success', 'Category added successfully.');
             } else {
-                $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $imageName = uniqid('cat_', true) . '.' . $ext;
-                $dest = __DIR__ . '/../uploads/categories/' . $imageName;
-                if (!move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
-                    $errors[] = 'Failed to move uploaded image.';
-                }
+                if ($id <= 0) throw new RuntimeException('Invalid category.');
+                $category = db_fetch_one('SELECT image FROM categories WHERE id = ?', [$id]);
+                if (!$category) throw new RuntimeException('Category not found.');
+                $newImage = store_category_image($_FILES['image'] ?? []);
+                $image = $newImage ?? $category['image'];
+                db_query('UPDATE categories SET name = ?, slug = ?, description = ?, image = ?, is_active = ? WHERE id = ?', [$name, $slug, $description, $image, $isActive, $id]);
+                if ($newImage && $category['image'] !== $newImage) remove_category_image($category['image']);
+                set_flash('success', 'Category updated.');
             }
+        } elseif ($action === 'deactivate') {
+            $id = (int) ($_POST['id'] ?? 0);
+            if ($id <= 0) throw new RuntimeException('Invalid category.');
+            db_query('UPDATE categories SET is_active = 0 WHERE id = ?', [$id]);
+            set_flash('success', 'Category deactivated.');
         }
-
-        if (empty($errors)) {
-            if ($action === 'create') {
-                $stmt = $pdo->prepare("INSERT INTO categories (name, slug, image, is_active) VALUES (:name, :slug, :image, :is_active)");
-                $stmt->execute([
-                    ':name' => $name,
-                    ':slug' => $slug,
-                    ':image' => $imageName,
-                    ':is_active' => $isActive,
-                ]);
-                $success = 'Category created successfully.';
-            } elseif ($action === 'edit' && $categoryId > 0) {
-                // If a new image was uploaded, delete old one
-                if ($imageName !== null) {
-                    $old = $pdo->prepare("SELECT image FROM categories WHERE id = :id")->execute([':id' => $categoryId]);
-                    $oldImg = $pdo->query("SELECT image FROM categories WHERE id = $categoryId")->fetchColumn();
-                    if ($oldImg && file_exists(__DIR__ . '/../uploads/categories/' . $oldImg)) {
-                        @unlink(__DIR__ . '/../uploads/categories/' . $oldImg);
-                    }
-                } else {
-                    // Keep existing image
-                    $imageName = $pdo->query("SELECT image FROM categories WHERE id = $categoryId")->fetchColumn();
-                }
-                $stmt = $pdo->prepare("UPDATE categories SET name = :name, slug = :slug, image = :image, is_active = :is_active WHERE id = :id");
-                $stmt->execute([
-                    ':name' => $name,
-                    ':slug' => $slug,
-                    ':image' => $imageName,
-                    ':is_active' => $isActive,
-                    ':id' => $categoryId,
-                ]);
-                $success = 'Category updated successfully.';
-            }
-        }
+    } catch (RuntimeException $exception) {
+        set_flash('error', $exception->getMessage());
     }
+    redirect(url('/admin/categories.php'));
 }
 
-// Handle deletions via GET (simple approach – you may replace with POST + CSRF)
-if (isset($_GET['delete'])) {
-    $delId = intval($_GET['delete']);
-    // Check for related products to avoid FK errors
-    $cnt = $pdo->query("SELECT COUNT(*) FROM products WHERE category_id = $delId")->fetchColumn();
-    if ($cnt > 0) {
-        $errors[] = 'Cannot delete category with associated products. Deactivate instead.';
-    } else {
-        // Delete image file
-        $oldImg = $pdo->query("SELECT image FROM categories WHERE id = $delId")->fetchColumn();
-        if ($oldImg && file_exists(__DIR__ . '/../uploads/categories/' . $oldImg)) {
-            @unlink(__DIR__ . '/../uploads/categories/' . $oldImg);
-        }
-        $pdo->exec("DELETE FROM categories WHERE id = $delId");
-        $success = 'Category deleted.';
-    }
-}
-
-// Fetch all categories for list view
-$categories = db_fetch_all("SELECT * FROM categories ORDER BY name ASC");
-
-// Helper to repopulate form when editing
-$editCategory = null;
-if (isset($_GET['edit'])) {
-    $editId = intval($_GET['edit']);
-    $editCategory = $pdo->prepare("SELECT * FROM categories WHERE id = :id")->execute([':id' => $editId]) ? $pdo->query("SELECT * FROM categories WHERE id = $editId")->fetch(PDO::FETCH_ASSOC) : null;
-}
+$search = trim((string) ($_GET['search'] ?? ''));
+$page = max(1, (int) ($_GET['page'] ?? 1));
+$limit = 15;
+$offset = ($page - 1) * $limit;
+$where = $search === '' ? '' : 'WHERE c.name LIKE ? OR c.slug LIKE ? OR c.description LIKE ?';
+$params = $search === '' ? [] : ["%{$search}%", "%{$search}%", "%{$search}%"];
+$total = (int) (db_fetch_value("SELECT COUNT(*) FROM categories c {$where}", $params) ?? 0);
+$pages = max(1, (int) ceil($total / $limit));
+$categories = db_fetch_all("SELECT c.*, COUNT(p.id) AS product_count FROM categories c LEFT JOIN products p ON p.category_id = c.id {$where} GROUP BY c.id ORDER BY c.name ASC LIMIT {$limit} OFFSET {$offset}", $params);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <?php include __DIR__ . '/../includes/meta.php'; ?>
-    <title>Manage Categories – <?= e(setting('site_name')) ?></title>
-    <?php include __DIR__ . '/../includes/head.php'; ?>
-</head>
-<body class="bg-gray-100">
-<?php include __DIR__ . '/../includes/header.php'; ?>
-<div class="container mx-auto py-8">
-    <h1 class="text-2xl font-bold mb-4">Category Management</h1>
 
-    <?php if (!empty($errors)): ?>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <ul class="list-disc list-inside">
-                <?php foreach ($errors as $err): ?>
-                    <li><?= e($err) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
-    <?php if ($success): ?>
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            <?= e($success) ?>
-        </div>
-    <?php endif; ?>
+<div class="mx-auto max-w-7xl space-y-6">
+    <header class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div><p class="mb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-indigo-700">Catalog setup</p><h1 class="text-2xl font-bold tracking-tight text-slate-950">Categories</h1><p class="mt-1 text-sm text-slate-500">Organize products, descriptions, and category images.</p></div>
+        <span class="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-xs"><i data-lucide="layers-3" class="h-3.5 w-3.5 text-indigo-600"></i><?= number_format($total) ?> categories</span>
+    </header>
 
-    <!-- Category Form -->
-    <div class="bg-white rounded shadow p-6 mb-8">
-        <h2 class="text-xl font-semibold mb-4"><?= $editCategory ? 'Edit' : 'Add' ?> Category</h2>
-        <form method="post" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <?= csrf_field() ?>
-            <input type="hidden" name="action" value="<?= $editCategory ? 'edit' : 'create' ?>">
-            <?php if ($editCategory): ?>
-                <input type="hidden" name="id" value="<?= $editCategory['id'] ?>">
-            <?php endif; ?>
-            <div>
-                <label class="block font-medium mb-1" for="name">Name</label>
-                <input type="text" id="name" name="name" required class="w-full border rounded px-2 py-1" value="<?= e($editCategory['name'] ?? '') ?>">
-            </div>
-            <div>
-                <label class="block font-medium mb-1" for="slug">Slug (optional)</label>
-                <input type="text" id="slug" name="slug" class="w-full border rounded px-2 py-1" placeholder="auto-generated" value="<?= e($editCategory['slug'] ?? '') ?>">
-            </div>
-            <div>
-                <label class="block font-medium mb-1" for="image">Image <?= $editCategory && $editCategory['image'] ? '(leave blank to keep existing)' : '' ?></label>
-                <input type="file" id="image" name="image" accept="image/*" class="w-full">
-                <?php if ($editCategory && $editCategory['image'] && file_exists(__DIR__ . '/../uploads/categories/' . $editCategory['image'])): ?>
-                    <img src="<?= url('/uploads/categories/' . $editCategory['image']) ?>" alt="Current" class="mt-2 h-16 rounded">
-                <?php endif; ?>
-            </div>
-            <div class="flex items-center">
-                <input type="checkbox" id="is_active" name="is_active" <?= ($editCategory['is_active'] ?? 1) ? 'checked' : '' ?> class="mr-2">
-                <label for="is_active" class="font-medium">Active</label>
-            </div>
-            <div class="col-span-2">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <?= $editCategory ? 'Update' : 'Create' ?> Category
-                </button>
-                <?php if ($editCategory): ?>
-                    <a href="categories.php" class="ml-4 text-gray-600 hover:underline">Cancel</a>
-                <?php endif; ?>
-            </div>
+    <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
+        <div class="flex items-center gap-3 border-b border-slate-100 px-5 py-4 sm:px-6"><span class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700"><i data-lucide="folder-plus" class="h-4 w-4"></i></span><div><h2 class="text-sm font-bold text-slate-900">Add Category</h2><p class="mt-0.5 text-xs text-slate-500">Create a catalog grouping with an optional image.</p></div></div>
+        <form method="POST" action="<?= url('/admin/categories.php') ?>" enctype="multipart/form-data" class="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2 sm:p-6 xl:grid-cols-5">
+            <?= csrf_field() ?><input type="hidden" name="action" value="store">
+            <label class="block text-sm font-semibold text-slate-700">Name <span class="text-rose-500">*</span><input name="name" required maxlength="150" placeholder="e.g. Smartphones" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"></label>
+            <label class="block text-sm font-semibold text-slate-700">Slug <span class="text-xs font-normal text-slate-500">(optional)</span><input name="slug" maxlength="150" placeholder="Auto-generated if blank" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"></label>
+            <label class="block text-sm font-semibold text-slate-700">Description<input name="description" maxlength="1000" placeholder="Optional details" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"></label>
+            <label class="block text-sm font-semibold text-slate-700">Image <span class="text-xs font-normal text-slate-500">(max 5 MB)</span><input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" class="mt-1.5 block w-full text-xs text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:font-semibold file:text-indigo-700"></label>
+            <div class="flex items-end gap-3"><label class="flex flex-1 items-center gap-2 rounded-lg border border-slate-200 px-3.5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"><input type="checkbox" name="is_active" value="1" checked class="h-4 w-4 rounded text-indigo-600"><span>Active</span></label><button type="submit" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white shadow-xs transition hover:bg-indigo-700"><i data-lucide="plus" class="h-4 w-4"></i>Add</button></div>
         </form>
-    </div>
+    </section>
 
-    <!-- Category List -->
-    <div class="bg-white rounded shadow p-6">
-        <h2 class="text-xl font-semibold mb-4">Existing Categories</h2>
-        <table class="w-full table-auto">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="px-4 py-2">ID</th>
-                    <th class="px-4 py-2">Name</th>
-                    <th class="px-4 py-2">Image</th>
-                    <th class="px-4 py-2">Active</th>
-                    <th class="px-4 py-2">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($categories as $cat): ?>
-                    <tr class="border-t">
-                        <td class="px-4 py-2 text-center"><?= e($cat['id']) ?></td>
-                        <td class="px-4 py-2"><?= e($cat['name']) ?></td>
-                        <td class="px-4 py-2">
-                            <?php if (!empty($cat['image']) && file_exists(__DIR__ . '/../uploads/categories/' . $cat['image'])): ?>
-                                <img src="<?= url('/uploads/categories/' . $cat['image']) ?>" alt="<?= e($cat['name']) ?>" class="h-12 rounded">
-                            <?php else: ?>
-                                <span class="text-gray-500">-</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="px-4 py-2 text-center"><?= $cat['is_active'] ? 'Yes' : 'No' ?></td>
-                        <td class="px-4 py-2 text-center">
-                            <a href="?edit=<?= $cat['id'] ?>" class="text-blue-600 hover:underline mr-2">Edit</a>
-                            <a href="?delete=<?= $cat['id'] ?>" onclick="return confirm('Delete this category?');" class="text-red-600 hover:underline">Delete</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
+    <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
+        <div class="flex flex-col gap-4 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6"><div><h2 class="text-sm font-bold text-slate-900">Category List</h2><p class="mt-0.5 text-xs text-slate-500">Update category details, images, and availability.</p></div><form method="GET" action="<?= url('/admin/categories.php') ?>" class="flex w-full gap-2 sm:w-auto"><div class="relative min-w-0 flex-1 sm:w-72"><i data-lucide="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i><input name="search" value="<?= e($search) ?>" placeholder="Search categories..." class="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm outline-none transition focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"></div><button type="submit" class="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Search</button></form></div>
+        <div class="overflow-x-auto"><table class="min-w-full divide-y divide-slate-200 text-left text-sm"><thead class="bg-slate-50/80 text-[11px] font-semibold uppercase tracking-wide text-slate-500"><tr><th class="px-5 py-3.5">Category</th><th class="px-5 py-3.5">Image</th><th class="px-5 py-3.5 text-right">Products</th><th class="px-5 py-3.5">Status</th><th class="px-5 py-3.5 text-right">Manage</th></tr></thead><tbody class="divide-y divide-slate-100">
+            <?php foreach ($categories as $category): ?>
+                <tr class="transition hover:bg-slate-50/70"><td class="min-w-[25rem] px-5 py-3.5"><form method="POST" action="<?= url('/admin/categories.php') ?>" enctype="multipart/form-data" class="grid gap-2"><?= csrf_field() ?><input type="hidden" name="action" value="update"><input type="hidden" name="id" value="<?= (int) $category['id'] ?>"><input name="name" required maxlength="150" value="<?= e($category['name']) ?>" class="rounded-md border border-slate-300 px-2.5 py-1.5 text-xs font-semibold outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"><input name="slug" required maxlength="150" value="<?= e($category['slug']) ?>" class="rounded-md border border-slate-300 px-2.5 py-1.5 font-mono text-xs outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"><input name="description" maxlength="1000" value="<?= e($category['description'] ?? '') ?>" placeholder="Description" class="rounded-md border border-slate-300 px-2.5 py-1.5 text-xs outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"><input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" class="text-xs text-slate-600"><label class="flex items-center gap-2 text-xs font-medium text-slate-600"><input type="checkbox" name="is_active" value="1" <?= $category['is_active'] ? 'checked' : '' ?> class="h-4 w-4 rounded text-indigo-600">Active</label><button type="submit" class="inline-flex w-fit items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-50"><i data-lucide="check" class="h-3.5 w-3.5"></i>Save</button></form></td><td class="px-5 py-3.5"><?php if (!empty($category['image']) && is_file(__DIR__ . '/../uploads/categories/' . basename($category['image']))): ?><img src="<?= url('/uploads/categories/' . rawurlencode($category['image'])) ?>" alt="<?= e($category['name']) ?>" class="h-12 w-12 rounded-lg border border-slate-200 object-cover"><?php else: ?><span class="text-xs text-slate-400">No image</span><?php endif; ?></td><td class="px-5 py-3.5 text-right"><span class="inline-flex min-w-8 justify-center rounded-md bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700"><?= (int) $category['product_count'] ?></span></td><td class="whitespace-nowrap px-5 py-3.5"><span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold <?= $category['is_active'] ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500' ?>"><span class="h-1.5 w-1.5 rounded-full <?= $category['is_active'] ? 'bg-emerald-500' : 'bg-slate-400' ?>"></span><?= $category['is_active'] ? 'Active' : 'Inactive' ?></span></td><td class="px-5 py-3.5 text-right"><?php if ($category['is_active']): ?><form method="POST" action="<?= url('/admin/categories.php') ?>" onsubmit="return confirm('Deactivate this category?')"><?= csrf_field() ?><input type="hidden" name="action" value="deactivate"><input type="hidden" name="id" value="<?= (int) $category['id'] ?>"><button type="submit" class="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50"><i data-lucide="ban" class="h-3.5 w-3.5"></i>Deactivate</button></form><?php endif; ?></td></tr>
+            <?php endforeach; ?>
+            <?php if (!$categories): ?><tr><td colspan="5" class="px-5 py-12 text-center text-sm text-slate-400">No categories found.</td></tr><?php endif; ?>
+        </tbody></table></div>
+        <div class="flex flex-col gap-2 border-t border-slate-100 px-5 py-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6"><p>Showing <?= count($categories) ?> of <?= $total ?> categories</p><p>Page <?= $page ?> of <?= $pages ?></p></div>
+    </section>
 </div>
-<?php include __DIR__ . '/../includes/footer.php'; ?>
-</body>
-</html>
+
+<?php require __DIR__ . '/../includes/admin-footer.php'; ?>

@@ -10,7 +10,7 @@ $old    = ['name' => '', 'email' => '', 'phone' => '', 'role' => 'technician'];
 
 // ── POST: Create staff member ─────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
 
     $name     = trim((string)($_POST['name']     ?? ''));
     $email    = strtolower(trim((string)($_POST['email']    ?? '')));

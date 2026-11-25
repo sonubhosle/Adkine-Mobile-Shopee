@@ -1,6 +1,7 @@
         </main>
     </div>
 
+    <?php require __DIR__ . '/language-script.php'; ?>
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('adminSidebar');

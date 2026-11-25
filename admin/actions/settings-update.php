@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect(url('/admin/settings.php'));
 }
 
-verify_csrf();
+require_csrf();
 
 $data = $_POST['settings'] ?? [];
 $tab  = trim((string)($_POST['redirect_tab'] ?? ''));

@@ -10,44 +10,25 @@ require_role('admin', 'manager');
 $lowCount = (int)(db_fetch_value("SELECT COUNT(*) FROM inventory WHERE current_stock <= min_stock_threshold") ?? 0);
 ?>
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-100">
+<html lang="<?= e(current_language()) ?>" class="h-full bg-slate-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
     <title><?= isset($pageTitle) ? e($pageTitle) . ' | Admin ERP' : 'Admin ERP Dashboard | ' . e(setting('site_name', 'Apex Mobile Hub')) ?></title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: {
-                            800: '#1e293b',
-                            900: '#0f172a',
-                            950: '#020617',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="<?= e(asset('/public/assets/app.css')) ?>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.468.0"></script>
     <!-- Resource Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://unpkg.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif; -webkit-tap-highlight-color: transparent; }
         html, body { overflow-x: hidden; }
 
         /* Prevent iOS Safari 100%+ auto-zoom on input focus when font-size < 16px */
@@ -275,6 +256,7 @@ $lowCount = (int)(db_fetch_value("SELECT COUNT(*) FROM inventory WHERE current_s
             </div>
 
             <div class="flex items-center gap-3">
+                <?= language_switcher('hidden sm:flex items-center gap-1 border border-slate-200 rounded-lg p-0.5') ?>
                 <a href="<?= url('/index.php') ?>" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition">
                     <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-400"></i>
                     <span>Storefront</span>

@@ -1,30 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-100">
+<html lang="<?= e(current_language()) ?>" class="h-full bg-slate-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
-    <title><?= isset($title) ? e($title) . ' | Technician Workbench' : 'Technician Workbench | ' . e(setting('site_name', 'Adkine Mobile Shopee')) ?></title>
+    <title><?= isset($title) ? e(t($title)) . ' | ' . e(t('Technician Workbench')) : e(t('Technician Workbench')) . ' | ' . e(setting('site_name', 'Adkine Mobile Shopee')) ?></title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= e(asset('/public/assets/app.css')) ?>">
+    <script src="https://unpkg.com/lucide@0.468.0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif; -webkit-tap-highlight-color: transparent; }
         html, body { overflow-x: hidden; }
 
         /* Prevent iOS Safari 100%+ auto-zoom on input focus when font-size < 16px */
@@ -70,7 +56,8 @@
             </a>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 sm:gap-4">
+            <?= language_switcher('hidden sm:flex items-center gap-1 border border-slate-600 rounded-lg p-0.5') ?>
             <div class="text-xs text-slate-300 font-semibold flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span><?= e(auth_user()['full_name'] ?? 'Technician') ?></span>

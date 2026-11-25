@@ -34,14 +34,14 @@ $seoCanonical = !empty($canonicalUrl)
     : e(strtok($currentFullUrl, '?'));
 
 $seoOgType = !empty($ogType) ? e($ogType) : 'website';
-$seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/assets/images/og-preview.jpg'));
+$seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/public/assets/og-preview.svg'));
 ?>
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-50 overflow-x-hidden">
+<html lang="<?= e(current_language() === 'mr' ? 'mr' : 'en') ?>" class="h-full bg-slate-50 overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title><?= $seoTitle ?></title>
+    <title><?= e(t($pageTitle ?? $siteName)) ?><?= isset($pageTitle) ? ' | ' . e($siteName) : ' - ' . e($siteTagline) ?></title>
     
     <!-- Technical SEO Metadata -->
     <meta name="description" content="<?= $seoDesc ?>">
@@ -129,47 +129,16 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
     </script>
     <?php endif; ?>
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        },
-                        navy: {
-                            800: '#1e293b',
-                            900: '#0f172a',
-                            950: '#020617',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="<?= e(asset('/public/assets/app.css')) ?>">
    
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.468.0"></script>
     
     <!-- Resource Hints & DNS Prefetch -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
     <link rel="dns-prefetch" href="https://unpkg.com">
-    <link rel="dns-prefetch" href="https://translate.google.com">
-    <link rel="dns-prefetch" href="https://translate.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         html {
@@ -186,37 +155,6 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
             top: 0 !important;
         }
         [x-cloak] { display: none !important; }
-
-        /* ── Hide Google Translate banner, balloon, iframes & toolbars ── */
-        .goog-te-banner-frame,
-        .goog-te-balloon-frame,
-        #goog-gt-tt,
-        .goog-tooltip,
-        .goog-tooltip:hover,
-        .goog-text-highlight,
-        .skiptranslate,
-        .goog-te-gadget,
-        iframe.skiptranslate,
-        iframe[name=":1.container"],
-        iframe[name=":2.container"] {
-            display: none !important;
-            visibility: hidden !important;
-        }
-        body { top: 0 !important; }
-        body > .skiptranslate { display: none !important; }
-
-        /* ── Hidden host for Google Translate element ── */
-        #google_translate_element {
-            position: fixed !important;
-            top: -9999px !important;
-            left: -9999px !important;
-            width: 1px !important;
-            height: 1px !important;
-            opacity: 0 !important;
-            overflow: hidden !important;
-            pointer-events: none !important;
-            z-index: -9999 !important;
-        }
 
         /* ── Top Bar Live Marquee Scroller ── */
         @keyframes topBarMarqueeAnim {
@@ -521,7 +459,7 @@ $seoOgImage = !empty($ogImage) ? e(absolute_url($ogImage)) : e(absolute_url('/as
 
                 <!-- Right Action & Navigation Hub: Equal Spacing (gap-4) & Matching Heights (h-10) -->
                 <div class="flex items-center gap-3 sm:gap-4 shrink-0">
-                    
+                    <?= language_switcher('flex items-center gap-1 border border-slate-200 rounded-lg p-0.5') ?>
                
 
                     <!-- Search Input with Live Autocomplete Suggestions -->

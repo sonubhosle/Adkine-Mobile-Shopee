@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect(url('/admin/staff-create.php'));
 }
 
-verify_csrf();
+require_csrf();
 
 $name     = trim((string)($_POST['name']     ?? ''));
 $email    = strtolower(trim((string)($_POST['email']    ?? '')));

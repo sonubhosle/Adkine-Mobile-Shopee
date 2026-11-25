@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/admin-header.php';
 
 // Handle Deactivation via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'deactivate') {
-    verify_csrf();
+    require_csrf();
     $id = (int)($_POST['id'] ?? 0);
     if ($id > 0) {
         db_query("UPDATE products SET is_active = 0 WHERE id = ?", [$id]);

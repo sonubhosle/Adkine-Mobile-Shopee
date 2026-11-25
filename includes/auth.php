@@ -25,6 +25,21 @@ function session_init(): void
         'samesite' => 'Lax',
     ]);
     session_start();
+
+    $requestedLanguage = $_GET['lang'] ?? null;
+    if (is_string($requestedLanguage) && in_array($requestedLanguage, ['en', 'mr'], true)) {
+        $_SESSION['preferred_language'] = $requestedLanguage;
+        setcookie('preferred_language', $requestedLanguage, [
+            'expires' => time() + (365 * 24 * 60 * 60),
+            'path' => '/',
+            'secure' => $secure,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+    } elseif (!isset($_SESSION['preferred_language'])) {
+        $savedLanguage = $_COOKIE['preferred_language'] ?? 'en';
+        $_SESSION['preferred_language'] = is_string($savedLanguage) && $savedLanguage === 'mr' ? 'mr' : 'en';
+    }
 }
 
 // ─── Auth State ──────────────────────────────────────────────────────────────

@@ -169,6 +169,7 @@ require_once __DIR__ . '/../includes/technician-header.php';
 </div>
 
 </div>
+<?php require __DIR__ . '/../includes/language-script.php'; ?>
 </body>
 </html>
 

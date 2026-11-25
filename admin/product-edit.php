@@ -18,7 +18,7 @@ $errors = [];
 
 // Handle Form Submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
     $subAction = $_POST['sub_action'] ?? 'update_product';
 
     if ($subAction === 'update_product') {

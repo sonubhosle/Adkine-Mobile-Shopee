@@ -45,7 +45,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'search') {
 
 // ── Handle POS Sale Submission ────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf();
+    require_csrf();
 
     $customer_name   = trim($_POST['customer_name'] ?? 'Walk-in Customer');
     $customer_phone  = trim($_POST['customer_phone'] ?? '');

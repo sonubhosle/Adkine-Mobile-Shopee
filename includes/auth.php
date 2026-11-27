@@ -8,34 +8,34 @@
 
 function session_init(): void
 {
-    if (session_status() === PHP_SESSION_ACTIVE) {
-        return;
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+              || (defined('APP_ENV') && APP_ENV === 'production');
+
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_name(SESSION_NAME);
+        session_set_cookie_params([
+            'lifetime' => SESSION_LIFETIME,
+            'path'     => '/',
+            'domain'   => '',
+            'secure'   => $secure,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+        session_start();
     }
-
-    $secure   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-                 || (defined('APP_ENV') && APP_ENV === 'production');
-
-    session_name(SESSION_NAME);
-    session_set_cookie_params([
-        'lifetime' => SESSION_LIFETIME,
-        'path'     => '/',
-        'domain'   => '',
-        'secure'   => $secure,
-        'httponly' => true,
-        'samesite' => 'Lax',
-    ]);
-    session_start();
 
     $requestedLanguage = $_GET['lang'] ?? null;
     if (is_string($requestedLanguage) && in_array($requestedLanguage, ['en', 'mr'], true)) {
         $_SESSION['preferred_language'] = $requestedLanguage;
-        setcookie('preferred_language', $requestedLanguage, [
-            'expires' => time() + (365 * 24 * 60 * 60),
-            'path' => '/',
-            'secure' => $secure,
-            'httponly' => true,
-            'samesite' => 'Lax',
-        ]);
+        if (!headers_sent()) {
+            setcookie('preferred_language', $requestedLanguage, [
+                'expires' => time() + (365 * 24 * 60 * 60),
+                'path' => '/',
+                'secure' => $secure,
+                'httponly' => false,
+                'samesite' => 'Lax',
+            ]);
+        }
     } elseif (!isset($_SESSION['preferred_language'])) {
         $savedLanguage = $_COOKIE['preferred_language'] ?? 'en';
         $_SESSION['preferred_language'] = is_string($savedLanguage) && $savedLanguage === 'mr' ? 'mr' : 'en';

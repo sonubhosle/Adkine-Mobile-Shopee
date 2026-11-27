@@ -1,93 +1,3 @@
-<!--
-<?php
-
-?>
-<footer class="bg-gray-50 text-gray-800 border-t border-gray-200">
-  <div class=" px-4 sm:px-6 lg:px-8 py-12">
-    <!-- Top Row: Brand + Socials -->
-    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-8">
-      <!-- Brand Identity -->
-      <div class="md:w-1/3">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center text-white shadow-lg">
-            <!-- You can replace the SVG with your logo if needed -->
-            <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="6.5" y="2.5" width="19" height="27" rx="3.8" stroke="white" stroke-width="2"/>
-              <path d="M16 8L10.5 22H13.6L14.7 19H17.3L18.4 22H21.5L16 8Z" fill="white"/>
-              <path d="M16 11.5L15.1 16.5H16.9L16 11.5Z" fill="#1e1b4b"/>
-              <path d="M16.8 13.5L13.8 19H17L15 25L21 18H17.5L19.2 13.5H16.8Z" fill="#facc15"/>
-            </svg>
-          </div>
-          <div>
-            <h2 class="text-xl font-extrabold tracking-tight text-gray-900">ADKINE <span class="text-indigo-600">MOBILE</span></h2>
-            <p class="text-sm font-medium uppercase text-gray-500 mt-1">Smartphones • Certified Repairs • Gadgets</p>
-          </div>
-        </div>
-        <p class="mt-4 text-sm text-gray-600 max-w-xs">
-          Premier electronics retail showroom, certified smartphone chip‑level repair lab, and unified multi‑channel inventory ERP system.
-        </p>
-        <div class="mt-4 text-xs space-y-1 text-gray-500">
-          <div><strong class="text-gray-900">Store Address:</strong> <?= e(setting('store_address', 'Electronics City Tech Park, Bengaluru')) ?></div>
-          <div><strong class="text-gray-900">Customer Support:</strong> <?= e(setting('site_phone', '+91 98765 43210')) ?></div>
-          <div><strong class="text-gray-900">GSTIN:</strong> <?= e(setting('store_gstin', '29AABCA1234A1Z5')) ?></div>
-        </div>
-        <!-- Social Icons -->
-        <div class="flex gap-3 mt-4 text-gray-500">
-          <a href="#" aria-label="Instagram" class="hover:text-gray-900 transition"><i class='bx bxl-instagram' class="w-5 h-5"></i></a>
-          <a href="#" aria-label="Facebook" class="hover:text-gray-900 transition"><i class='bx bxl-facebook' class="w-5 h-5"></i></a>
-          <a href="#" aria-label="Twitter" class="hover:text-gray-900 transition"><i class='bx bxl-twitter' class="w-5 h-5"></i></a>
-        </div>
-      </div>
-
-      <!-- Links Columns -->
-      <div class="grid grid-cols-2 gap-8 md:w-2/3">
-        <!-- Customer Service -->
-        <div>
-          <h3 class="font-semibold text-gray-900 text-sm uppercase mb-4">Customer Service</h3>
-          <ul class="space-y-2 text-sm text-gray-600">
-            <li><a href="<?= url('/contact.php') ?>" class="hover:text-gray-900 transition">Contact Us</a></li>
-            <li><a href="<?= url('/faq.php') ?>" class="hover:text-gray-900 transition">FAQs</a></li>
-            <li><a href="<?= url('/shipping.php') ?>" class="hover:text-gray-900 transition">Shipping</a></li>
-            <li><a href="<?= url('/returns.php') ?>" class="hover:text-gray-900 transition">Returns</a></li>
-            <li><a href="<?= url('/track-order.php') ?>" class="hover:text-gray-900 transition">Order Tracking</a></li>
-          </ul>
-        </div>
-        <!-- Shopping Categories -->
-        <div>
-          <h3 class="font-semibold text-gray-900 text-sm uppercase mb-4">Shop</h3>
-          <ul class="space-y-2 text-sm text-gray-600">
-            <li><a href="<?= url('/shop.php?category=smartphones') ?>" class="hover:text-gray-900 transition"><i class='bx bxs-mobile' class="w-5 h-5 mr-1 inline-block align-middle"></i>Smartphones</a></li>
-            <li><a href="<?= url('/shop.php?category=chargers-adapters') ?>" class="hover:text-gray-900 transition"><i class='bx bx-bolt' class="w-5 h-5 mr-1 inline-block align-middle"></i>Fast Chargers &amp; GaN</a></li>
-            <li><a href="<?= url('/shop.php?category=earphones-audio') ?>" class="hover:text-gray-900 transition"><i class='bx bx-headphone' class="w-5 h-5 mr-1 inline-block align-middle"></i>TWS &amp; Headphones</a></li>
-            <li><a href="<?= url('/shop.php?category=smartwatches') ?>" class="hover:text-gray-900 transition"><i data-lucide="watch" class="w-4 h-4 mr-1 inline-block align-middle"></i>Smartwatches</a></li>
-            <li><a href="<?= url('/shop.php?category=mobile-covers') ?>" class="hover:text-gray-900 transition"><i data-lucide="shield" class="w-4 h-4 mr-1 inline-block align-middle"></i>Cases &amp; Protectors</a></li>
-          </ul>
-        </div>
-        <!-- Newsletter -->
-        <div class="col-span-2">
-          <h3 class="font-semibold text-gray-900 text-sm uppercase mb-4">Stay Updated</h3>
-          <form action="<?= url('/subscribe.php') ?>" method="post" class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-            <label for="footer-email" class="sr-only">Email address</label>
-            <input type="email" id="footer-email" name="email" required placeholder="Your email" class="flex-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" />
-            <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition">
-              Subscribe
-            </button>
-          </form>
-          <p class="mt-2 text-xs text-gray-500">We respect your privacy. Unsubscribe any time.</p>
-        </div>
-        <!-- Payment & Security -->
-        <div class="col-span-2">
-          <h3 class="font-semibold text-gray-900 text-sm uppercase mb-4">Secure Shopping</h3>
-          <div class="flex items-center gap-4 text-gray-500 text-sm">
-            <i data-lucide="shield-check" class="w-5 h-5"></i>
-            <span>Razorpay • 256‑Bit SSL</span>
-            <i data-lucide="credit-card" class="w-5 h-5"></i>
-            <span>UPI • Cards • Netbanking</span>
-          </div>
-        </div>
-      </div>
-    </div>
--->
     </main>
 
     <!-- Slide-over Shopping Cart Drawer -->
@@ -113,54 +23,137 @@
 
     <!-- Storefront Footer -->
     <footer class="bg-navy-950 text-slate-400 text-xs border-t border-slate-800 mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
+        <div class="px-6 py-5">
+            
+            <!-- TOP ROW: 2 Columns (Left: Brand Identity & Store Info, Right: Newsletter & Social Media) -->
+            <div class="grid grid-cols-1 pb-5 mb-5 md:grid-cols-2 gap-10 lg:gap-16 items-start pb-12 border-b border-slate-800/80">
+                
+                <!-- Left Column: Brand Identity & Store Info -->
+                <div class="space-y-4">
+                    <a href="<?= url('/index.php') ?>" class="flex items-center gap-2.5 group shrink-0 select-none">
+                    <!-- High-Tech Smartphone + Lightning + 'A' Monogram Badge -->
+                    <div class="relative w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-700 via-indigo-600 to-violet-700 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30 ring-1 ring-white/25 group-hover:scale-105 group-hover:shadow-indigo-600/50 transition-all duration-300 shrink-0 overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-transparent via-white/10 to-white/20 pointer-events-none"></div>
+                        <svg class="w-6 h-6 relative z-10" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="6.5" y="2.5" width="19" height="27" rx="3.8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="13" y1="5.5" x2="19" y2="5.5" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity="0.8"/>
+                            <path d="M16 8L10.5 22H13.6L14.7 19H17.3L18.4 22H21.5L16 8Z" fill="white"/>
+                            <path d="M16 11.5L15.1 16.5H16.9L16 11.5Z" fill="#1e1b4b"/>
+                            <path d="M16.8 13.5L13.8 19H17L15 25L21 18H17.5L19.2 13.5H16.8Z" fill="#facc15" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.35))"/>
+                            <circle cx="16" cy="26.5" r="1.1" fill="white" opacity="0.85"/>
+                        </svg>
+                    </div>
 
-                <!-- Col 1: Store Bio -->
-                <div class="lg:col-span-2 space-y-4">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-700 flex items-center justify-center text-white shadow-md shadow-indigo-600/30 ring-1 ring-white/20 shrink-0">
-                            <svg class="w-5 h-5" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="6.5" y="2.5" width="19" height="27" rx="3.8" stroke="white" stroke-width="2"/>
-                                <path d="M16 8L10.5 22H13.6L14.7 19H17.3L18.4 22H21.5L16 8Z" fill="white"/>
-                                <path d="M16 11.5L15.1 16.5H16.9L16 11.5Z" fill="#1e1b4b"/>
-                                <path d="M16.8 13.5L13.8 19H17L15 25L21 18H17.5L19.2 13.5H16.8Z" fill="#facc15"/>
-                            </svg>
+                    <!-- Brand Name & Identity -->
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-1 leading-none">
+                            <span class="text-lg font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600   transition-colors">
+                               New Adkine
+                            </span>
+                            
                         </div>
-                        <div>
-                            <div class="flex items-center gap-1.5 leading-none">
-                                <span class="text-lg font-extrabold text-white tracking-tight">ADKINE <span class="text-blue-400">MOBILE</span></span>
-                                <span class="px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-300 text-[9px] font-black uppercase">SHOPEE</span>
-                            </div>
-                            <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 block mt-1">Smartphones • Certified Repairs • Gadgets</span>
+                        <div class="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-[0.12em] text-slate-400 mt-0.5">
+                            <span class="text-sm sm:text-base font-black tracking-tight text-slate-200">
+                                Mobile
+                            </span>
+                            <span class="inline-flex items-center px-1 py-0.5 rounded bg-gradient-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30 text-amber-700 text-[8px] font-black tracking-wider uppercase">
+                               Shopee
+                            </span>
                         </div>
                     </div>
-                    <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
+                </a>
+
+                    <p class="text-slate-400 text-xs leading-relaxed max-w-lg">
                         Premier electronics retail showroom, certified smartphone chip-level repair lab, and unified multi-channel omnichannel inventory ERP system.
                     </p>
-                    <div class="text-[11px] space-y-1 text-slate-400">
-                        <div><strong class="text-white">Store Address:</strong> <?= e(setting('store_address', 'Electronics City Tech Park, Bengaluru')) ?></div>
-                        <div><strong class="text-white">Customer Support:</strong> <?= e(setting('site_phone', '+91 98765 43210')) ?></div>
-                        <div><strong class="text-white">GSTIN:</strong> <?= e(setting('store_gstin', '29AABCA1234A1Z5')) ?></div>
+                    <div class="text-[11px] space-y-1.5 text-slate-400 pt-1">
+                        <div class="flex items-start gap-2">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-blue-400 shrink-0 mt-0.5"></i>
+                            <span><strong class="text-white">Store Address:</strong> <?= e(setting('store_address', 'Showroom 101, Electronics City Tech Park, Bengaluru, Karnataka 560100')) ?></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="phone" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                            <span><strong class="text-white">Customer Support:</strong> <?= e(setting('site_phone', '+91 98765 43210')) ?></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                            <span><strong class="text-white">GSTIN:</strong> <?= e(setting('store_gstin', '29AABCA1234A1Z5')) ?></span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Col 2: Categories -->
+                <!-- Right Column: Newsletter & Social Media Icons -->
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-white text-sm uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="mail" class="w-4 h-4 text-blue-400"></i>
+                            Stay Updated
+                        </h4>
+                        <p class="mt-1.5 text-xs text-slate-400">
+                            Get product launches, repair offers, and store updates.
+                        </p>
+                        <form action="<?= url('/subscribe.php') ?>" method="post" class="mt-3.5 flex flex-col sm:flex-row gap-2 max-w-lg">
+                            <label for="footer-email" class="sr-only">Email address</label>
+                            <div class="relative flex-1">
+                                <input type="email" id="footer-email" name="email" required placeholder="Enter your email address" class="w-full rounded-xl border border-slate-700 bg-slate-900/90 px-4 py-2.5 text-xs text-white placeholder:text-slate-500 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20">
+                            </div>
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-blue-500/20 transition hover:from-blue-500 hover:to-indigo-500 focus-visible:ring-2 focus-visible:ring-blue-500 shrink-0">
+                                <span>Subscribe</span>
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Social Icons -->
+                    <div class="pt-2">
+                        <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block mb-2.5">Follow Us &amp; Connect</span>
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-pink-500/50 hover:bg-pink-500/10 transition-all flex items-center justify-center group" title="Instagram">
+                                <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            </a>
+                            <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-500/10 transition-all flex items-center justify-center group" title="Facebook">
+                                <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            </a>
+                            <a href="#" aria-label="Twitter / X" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-sky-500/50 hover:bg-sky-500/10 transition-all flex items-center justify-center group" title="X (Twitter)">
+                                <svg class="w-3.5 h-3.5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            </a>
+                            <a href="#" aria-label="WhatsApp" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-emerald-500/50 hover:bg-emerald-500/10 transition-all flex items-center justify-center group" title="WhatsApp">
+                                <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                            </a>
+                            <a href="#" aria-label="YouTube" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-red-500/50 hover:bg-red-500/10 transition-all flex items-center justify-center group" title="YouTube">
+                                <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- BOTTOM ROW: 4-Column Responsive Grid (Categories, Repair Lab, Customer Service, ERP & Accounts) -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10 pt-12">
+
+                <!-- Col 1: Categories -->
                 <div>
-                    <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4">Categories</h4>
+                    <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i data-lucide="smartphone" class="w-3.5 h-3.5 text-blue-400"></i>
+                        Categories
+                    </h4>
                     <ul class="space-y-2.5">
                         <li><a href="<?= url('/shop.php?category=smartphones') ?>" class="hover:text-white transition">Smartphones</a></li>
-                        <li><a href="<?= url('/shop.php?category=chargers-adapters') ?>" class="hover:text-white transition">Fast Chargers & GaN</a></li>
-                        <li><a href="<?= url('/shop.php?category=earphones-audio') ?>" class="hover:text-white transition">TWS & Headphones</a></li>
+                        <li><a href="<?= url('/shop.php?category=chargers-adapters') ?>" class="hover:text-white transition">Fast Chargers &amp; GaN</a></li>
+                        <li><a href="<?= url('/shop.php?category=earphones-audio') ?>" class="hover:text-white transition">TWS &amp; Headphones</a></li>
                         <li><a href="<?= url('/shop.php?category=smartwatches') ?>" class="hover:text-white transition">Smartwatches</a></li>
-                        <li><a href="<?= url('/shop.php?category=mobile-covers') ?>" class="hover:text-white transition">Cases & Protectors</a></li>
+                        <li><a href="<?= url('/shop.php?category=mobile-covers') ?>" class="hover:text-white transition">Cases &amp; Protectors</a></li>
                         <li><a href="<?= url('/shop.php?category=spare-parts') ?>" class="hover:text-white transition">OEM Spare Parts</a></li>
                     </ul>
                 </div>
 
-                <!-- Col 3: Repair Services -->
+                <!-- Col 2: Repair Lab -->
                 <div>
-                    <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4">Repair Lab</h4>
+                    <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i data-lucide="wrench" class="w-3.5 h-3.5 text-emerald-400"></i>
+                        Repair Lab
+                    </h4>
                     <ul class="space-y-2.5">
                         <li><a href="<?= url('/repair-book.php') ?>" class="hover:text-white transition">Book Device Repair</a></li>
                         <li><a href="<?= url('/repair-track.php') ?>" class="hover:text-white transition">Track Repair Ticket</a></li>
@@ -170,25 +163,31 @@
                     </ul>
                 </div>
 
-                <!-- Col 4: Customer service (preserved from the updated footer) -->
+                <!-- Col 3: Customer Service -->
                 <div>
-                    <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4">Customer Service</h4>
+                    <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i data-lucide="headphones" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        Customer Service
+                    </h4>
                     <ul class="space-y-2.5">
                         <li><a href="<?= url('/contact.php') ?>" class="hover:text-white transition">Contact Us</a></li>
                         <li><a href="<?= url('/faq.php') ?>" class="hover:text-white transition">FAQs</a></li>
-                        <li><a href="<?= url('/shipping.php') ?>" class="hover:text-white transition">Shipping</a></li>
-                        <li><a href="<?= url('/returns.php') ?>" class="hover:text-white transition">Returns</a></li>
+                        <li><a href="<?= url('/shipping.php') ?>" class="hover:text-white transition">Shipping Policy</a></li>
+                        <li><a href="<?= url('/returns.php') ?>" class="hover:text-white transition">Returns &amp; Warranty</a></li>
                         <li><a href="<?= url('/track-order.php') ?>" class="hover:text-white transition">Order Tracking</a></li>
                     </ul>
                 </div>
 
-                <!-- Col 5: ERP & Accounts -->
+                <!-- Col 4: ERP & Accounts -->
                 <div>
-                    <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4">ERP & Accounts</h4>
+                    <h4 class="font-bold text-white text-xs uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i data-lucide="shield" class="w-3.5 h-3.5 text-amber-400"></i>
+                        ERP &amp; Accounts
+                    </h4>
                     <ul class="space-y-2.5">
                         <li><a href="<?= url('/login.php') ?>" class="hover:text-white transition">Customer Sign In</a></li>
                         <li><a href="<?= url('/register.php') ?>" class="hover:text-white transition">Create Account</a></li>
-                        <li><a href="<?= url('/orders.php') ?>" class="hover:text-white transition">Order History & Invoices</a></li>
+                        <li><a href="<?= url('/orders.php') ?>" class="hover:text-white transition">Order History &amp; Invoices</a></li>
                         <li><a href="<?= url('/admin/index.php') ?>" class="text-blue-400 font-bold hover:underline">Admin ERP Terminal</a></li>
                         <li><a href="<?= url('/admin/pos.php') ?>" class="text-emerald-400 font-bold hover:underline">POS Cash Register</a></li>
                         <li><a href="<?= url('/technician/index.php') ?>" class="text-amber-400 font-bold hover:underline">Technician Workbench</a></li>
@@ -196,16 +195,7 @@
                 </div>
             </div>
 
-            <div class="mt-10 border-t border-slate-800 pt-7">
-                <h4 class="font-bold text-white text-xs uppercase tracking-wider">Stay Updated</h4>
-                <p class="mt-1 text-[11px] text-slate-400">Get product launches, repair offers, and store updates.</p>
-                <form action="<?= url('/subscribe.php') ?>" method="post" class="mt-3 flex max-w-md flex-col gap-2 sm:flex-row">
-                    <label for="footer-email" class="sr-only">Email address</label>
-                    <input type="email" id="footer-email" name="email" required placeholder="Your email address" class="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-white placeholder:text-slate-500 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400">
-                    <button type="submit" class="rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-indigo-500">Subscribe</button>
-                </form>
-            </div>
-
+            <!-- COPYRIGHT & SECURITY BAR -->
             <div class="border-t border-slate-900 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p class="text-slate-400 text-[11px]">
                     &copy; <?= date('Y') ?> <?= e(setting('site_name', 'Apex Mobile Hub & ERP')) ?>. All rights reserved. Plain Core PHP &amp; MySQLi.

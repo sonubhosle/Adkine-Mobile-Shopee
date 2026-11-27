@@ -2,23 +2,35 @@
     window.mobileShopLocale = <?= json_encode(current_language(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     window.mobileShopTranslations = <?= json_encode(mobile_shop_translations(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     (function () {
+        if (window.mobileShopLocale) {
+            document.cookie = "preferred_language=" + encodeURIComponent(window.mobileShopLocale) + ";path=/;max-age=" + (365 * 24 * 60 * 60);
+        }
+
         if (window.mobileShopLocale !== 'mr') return;
 
         var translations = window.mobileShopTranslations;
-        var phrases = Object.keys(translations).filter(function (phrase) {
-            return /\s/.test(phrase) || ['Add', 'items', 'Only', 'left', 'Options'].indexOf(phrase) !== -1;
-        }).sort(function (a, b) { return b.length - a.length; });
+        var phrases = Object.keys(translations).sort(function (a, b) { 
+            return b.length - a.length; 
+        });
         var translatedTextNodes = new WeakMap();
 
         function translateValue(value) {
+            if (!value) return value;
             if (Object.prototype.hasOwnProperty.call(translations, value)) return translations[value];
 
+            var trimmed = value.trim();
+            if (Object.prototype.hasOwnProperty.call(translations, trimmed)) {
+                return value.replace(trimmed, translations[trimmed]);
+            }
+
             return phrases.reduce(function (translated, phrase) {
+                if (!phrase || phrase.length < 2) return translated;
                 var escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                var startBoundary = /[A-Za-z0-9]$/.test(phrase) ? '(^|[^A-Za-z0-9])' : '';
                 var endBoundary = /[A-Za-z0-9]$/.test(phrase) ? '(?=$|[^A-Za-z0-9])' : '';
-                var expression = new RegExp('(^|[^A-Za-z0-9])(' + escaped + ')' + endBoundary, 'g');
-                return translated.replace(expression, function (match, prefix, text) {
-                    return prefix + translations[text];
+                var expression = new RegExp(startBoundary + '(' + escaped + ')' + endBoundary, 'g');
+                return translated.replace(expression, function (match, prefix) {
+                    return (prefix || '') + translations[phrase];
                 });
             }, value);
         }
@@ -34,6 +46,7 @@
         }
 
         document.title = translateValue(document.title);
+
         function translateTextNode(node) {
             if (node.parentElement && /^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|CODE|PRE)$/.test(node.parentElement.tagName)) return;
             var original = node.nodeValue;
@@ -72,7 +85,10 @@
             elements.forEach(translateAttributes);
         }
 
-        translateNode(document.body);
+        if (document.body) {
+            translateNode(document.body);
+        }
+
         new MutationObserver(function (records) {
             records.forEach(function (record) {
                 if (record.type === 'attributes') translateAttributes(record.target);

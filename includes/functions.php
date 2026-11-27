@@ -6,7 +6,27 @@ require_once __DIR__ . '/translations.php';
 
 function current_language(): string
 {
-    return ($_SESSION['preferred_language'] ?? 'en') === 'mr' ? 'mr' : 'en';
+    $requested = $_GET['lang'] ?? null;
+    if (is_string($requested) && in_array($requested, ['en', 'mr'], true)) {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['preferred_language'] = $requested;
+        }
+        return $requested;
+    }
+
+    if (isset($_SESSION['preferred_language']) && in_array($_SESSION['preferred_language'], ['en', 'mr'], true)) {
+        return $_SESSION['preferred_language'];
+    }
+
+    $cookieLang = $_COOKIE['preferred_language'] ?? null;
+    if (is_string($cookieLang) && in_array($cookieLang, ['en', 'mr'], true)) {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['preferred_language'] = $cookieLang;
+        }
+        return $cookieLang;
+    }
+
+    return 'en';
 }
 
 function t(string $text): string
@@ -44,6 +64,7 @@ function language_switcher(string $class = ''): string
         $isActive = $language === $code;
         $html .= '<a href="' . e(language_url($code)) . '" lang="' . e($code) . '" hreflang="' . e($code) . '"'
             . ($isActive ? ' aria-current="true"' : '')
+            . ' onclick="document.cookie=\'preferred_language=' . $code . ';path=/;max-age=31536000\';"'
             . ' class="rounded-md px-2 py-1 text-xs font-bold transition '
             . ($isActive ? 'bg-blue-100 text-blue-700' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800')
             . '">' . e($label) . '</a>';

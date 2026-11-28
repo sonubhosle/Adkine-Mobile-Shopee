@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2026 at 11:47 AM
+-- Generation Time: Nov 28, 2026 at 08:03 AM
 -- Server version: 10.11.16-MariaDB
 -- PHP Version: 8.5.12
 
@@ -88,15 +88,15 @@ CREATE TABLE `brands` (
 --
 
 INSERT INTO `brands` (`id`, `name`, `slug`, `logo`, `is_active`, `created_at`) VALUES
-(1, 'Apple', 'apple', 'apple.png', 1, '2026-11-13 11:16:33'),
-(2, 'Samsung', 'samsung', 'samsung.png', 1, '2026-11-13 11:16:33'),
-(3, 'Google', 'google', 'google.png', 1, '2026-11-13 11:16:33'),
-(4, 'OnePlus', 'oneplus', 'oneplus.png', 1, '2026-11-13 11:16:33'),
-(5, 'Xiaomi', 'xiaomi', 'xiaomi.png', 1, '2026-11-13 11:16:33'),
-(6, 'Realme', 'realme', 'realme.png', 1, '2026-11-13 11:16:33'),
-(7, 'boAt', 'boat', 'boat.png', 1, '2026-11-13 11:16:33'),
-(8, 'Anker', 'anker', 'anker.png', 1, '2026-11-13 11:16:33'),
-(9, 'Spigen', 'spigen', 'spigen.png', 1, '2026-11-13 11:16:33');
+(1, 'Apple', 'apple', 'brand_698bd1bc0cb8_1794989738.png', 1, '2026-11-13 11:16:33'),
+(2, 'Samsung', 'samsung', 'brand_01e2b7db94fc_1794989939.png', 1, '2026-11-13 11:16:33'),
+(3, 'Google', 'google', 'brand_81e89e67213f_1794989813.webp', 1, '2026-11-13 11:16:33'),
+(4, 'OnePlus', 'oneplus', 'brand_7674ac86584e_1794989884.jpg', 1, '2026-11-13 11:16:33'),
+(5, 'Xiaomi', 'xiaomi', 'brand_04986cf00832_1794990051.png', 1, '2026-11-13 11:16:33'),
+(6, 'Realme', 'realme', 'brand_0062470d38bc_1794989911.png', 1, '2026-11-13 11:16:33'),
+(7, 'boAt', 'boat', 'brand_e7a45e39393f_1794989787.jpg', 1, '2026-11-13 11:16:33'),
+(8, 'Anker', 'anker', 'brand_20f829eb3de9_1794989632.png', 1, '2026-11-13 11:16:33'),
+(9, 'Motorola', 'motorola', 'brand_8397ed8a3552_1794989989.jpg', 1, '2026-11-13 11:16:33');
 
 -- --------------------------------------------------------
 
@@ -111,6 +111,14 @@ CREATE TABLE `cart` (
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `cart`
+--
+
+INSERT INTO `cart` (`id`, `user_id`, `session_id`, `created_at`, `updated_at`) VALUES
+(1, 1, 'd79e3dc4eb5bb6e1575b23790175f263', '2026-11-19 05:47:26', '2026-11-19 05:47:26'),
+(2, 1, '14d2e6a349ae68eba0085aa8053dde14', '2026-11-28 06:25:40', '2026-11-28 06:25:40');
 
 -- --------------------------------------------------------
 
@@ -127,6 +135,13 @@ CREATE TABLE `cart_items` (
   `unit_price` decimal(12,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `cart_items`
+--
+
+INSERT INTO `cart_items` (`id`, `cart_id`, `product_id`, `variant_id`, `quantity`, `unit_price`, `created_at`) VALUES
+(2, 2, 15, NULL, 1, 14999.00, '2026-11-28 06:25:40');
 
 -- --------------------------------------------------------
 
@@ -241,24 +256,7 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`id`, `product_id`, `variant_id`, `current_stock`, `min_stock_threshold`, `max_stock_threshold`, `location_rack`, `updated_at`) VALUES
-(1, 1, 1, 12, 3, 30, 'Rack A-01 (Safe)', '2026-11-13 11:16:33'),
-(2, 1, 2, 8, 2, 20, 'Rack A-01 (Safe)', '2026-11-13 11:16:33'),
-(3, 1, 3, 15, 3, 30, 'Rack A-01 (Safe)', '2026-11-13 11:16:33'),
-(4, 2, 4, 14, 3, 25, 'Rack A-02', '2026-11-13 11:16:33'),
-(5, 2, 5, 9, 2, 20, 'Rack A-02', '2026-11-13 11:16:33'),
-(6, 3, 6, 18, 4, 35, 'Rack A-03', '2026-11-13 11:16:33'),
-(7, 3, 7, 11, 3, 25, 'Rack A-03', '2026-11-13 11:16:33'),
-(8, 4, NULL, 7, 2, 20, 'Rack A-04', '2026-11-13 11:16:33'),
-(9, 5, NULL, 35, 5, 80, 'Shelf B-01', '2026-11-13 11:16:33'),
-(10, 6, NULL, 40, 10, 100, 'Shelf B-02', '2026-11-13 11:16:33'),
-(11, 7, NULL, 28, 5, 60, 'Shelf C-01', '2026-11-13 11:16:33'),
-(12, 8, NULL, 22, 5, 50, 'Shelf C-02', '2026-11-13 11:16:33'),
-(13, 9, NULL, 6, 2, 15, 'Display Showcase 1', '2026-11-13 11:16:33'),
-(14, 10, NULL, 50, 10, 100, 'Hook Rack D-01', '2026-11-13 11:16:33'),
-(15, 11, NULL, 65, 15, 150, 'Hook Rack D-02', '2026-11-13 11:16:33'),
-(16, 12, NULL, 25, 5, 60, 'Shelf B-03', '2026-11-13 11:16:33'),
-(17, 13, NULL, 4, 2, 10, 'Parts Drawer P-01', '2026-11-13 11:16:33'),
-(18, 14, NULL, 5, 2, 12, 'Parts Drawer P-02', '2026-11-13 11:16:33');
+(19, 15, NULL, 10, 5, 100, 'Main Display', '2026-11-28 06:25:20');
 
 -- --------------------------------------------------------
 
@@ -280,6 +278,13 @@ CREATE TABLE `invoices` (
   `status` enum('issued','paid','cancelled') NOT NULL DEFAULT 'issued',
   `issued_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `invoices`
+--
+
+INSERT INTO `invoices` (`id`, `invoice_number`, `invoice_type`, `reference_id`, `user_id`, `subtotal`, `tax_amount`, `discount_amount`, `grand_total`, `pdf_path`, `status`, `issued_at`) VALUES
+(1, 'POS-20261119-214A', 'pos', 2, NULL, 1299.00, 198.15, 0.00, 1299.00, NULL, 'paid', '2026-11-19 05:22:19');
 
 -- --------------------------------------------------------
 
@@ -350,14 +355,6 @@ CREATE TABLE `order_items` (
   `quantity` int(10) UNSIGNED NOT NULL,
   `total_price` decimal(12,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `order_items`
---
-
-INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `variant_id`, `product_name`, `variant_name`, `sku`, `unit_price`, `quantity`, `total_price`) VALUES
-(1, 1, 5, NULL, 'Anker Prime 67W GaN Wall Charger', NULL, 'ANK-GAN-67W', 3499.00, 1, 3499.00),
-(2, 2, 8, NULL, 'boAt Stone 352 Bluetooth Speaker', NULL, 'BOAT-ST-352', 1499.00, 1, 1499.00);
 
 -- --------------------------------------------------------
 
@@ -456,7 +453,8 @@ CREATE TABLE `pos_sales` (
 --
 
 INSERT INTO `pos_sales` (`id`, `invoice_number`, `cashier_id`, `customer_name`, `customer_phone`, `subtotal`, `tax_amount`, `discount_amount`, `grand_total`, `payment_method`, `amount_paid`, `change_returned`, `status`, `notes`, `created_at`) VALUES
-(1, 'POS-2026-5001', 1, 'Walk-in Customer (Rajesh)', '9900112233', 1899.00, 341.82, 0.00, 2240.82, 'cash', 2500.00, 259.18, 'completed', NULL, '2026-11-12 11:16:33');
+(1, 'POS-2026-5001', 1, 'Walk-in Customer (Rajesh)', '9900112233', 1899.00, 341.82, 0.00, 2240.82, 'cash', 2500.00, 259.18, 'completed', NULL, '2026-11-12 11:16:33'),
+(2, 'POS-20261119-214A', 1, 'Walk-in Customer', NULL, 1299.00, 198.15, 0.00, 1299.00, 'cash', 1299.00, 0.00, 'completed', NULL, '2026-11-19 05:22:19');
 
 -- --------------------------------------------------------
 
@@ -477,13 +475,6 @@ CREATE TABLE `pos_sale_items` (
   `tax_rate` decimal(5,2) NOT NULL DEFAULT 18.00,
   `total_price` decimal(12,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `pos_sale_items`
---
-
-INSERT INTO `pos_sale_items` (`id`, `pos_sale_id`, `product_id`, `variant_id`, `product_name`, `variant_name`, `sku`, `unit_price`, `quantity`, `tax_rate`, `total_price`) VALUES
-(1, 1, 10, NULL, 'Spigen Tough Armor Case for iPhone 15 Pro', NULL, 'SPG-TA-IP15P', 1899.00, 1, 18.00, 1899.00);
 
 -- --------------------------------------------------------
 
@@ -512,6 +503,7 @@ CREATE TABLE `products` (
   `is_featured` tinyint(1) DEFAULT 0,
   `is_active` tinyint(1) DEFAULT 1,
   `warranty_months` int(10) UNSIGNED DEFAULT 12,
+  `discount_percent` decimal(5,2) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -520,21 +512,8 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `category_id`, `brand_id`, `name`, `slug`, `sku`, `barcode`, `model_number`, `short_desc`, `description`, `specifications`, `thumbnail`, `images`, `base_price`, `sale_price`, `cost_price`, `has_variants`, `is_featured`, `is_active`, `warranty_months`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 'Apple iPhone 15 Pro Max', 'apple-iphone-15-pro-max', 'IPH15PM-BASE', '8901234567890', 'A3106', 'Forged in titanium, Super Retina XDR display with ProMotion, A17 Pro Bionic chip, and 5x optical zoom camera.', '<p>iPhone 15 Pro Max is the first iPhone to feature an aerospace-grade titanium design, using the same alloy that spacecraft use for missions to Mars. The A17 Pro chip brings next-level gaming performance and camera capabilities.</p>', '{\"display\": \"6.7-inch Super Retina XDR OLED\", \"processor\": \"A17 Pro\", \"camera\": \"48MP Main + 12MP Ultra-wide + 12MP 5x Telephoto\", \"battery\": \"4422 mAh\", \"os\": \"iOS 17\"}', 'iphone15promax.jpg', NULL, 159900.00, 149900.00, 125000.00, 1, 1, 1, 12, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(2, 1, 2, 'Samsung Galaxy S24 Ultra 5G', 'samsung-galaxy-s24-ultra', 'SMS24U-BASE', '8901234567891', 'SM-S928B', 'Galaxy AI is here. Titanium exterior, 200MP Quad Telephoto camera with 100x Space Zoom, and built-in S Pen.', '<p>Meet Galaxy S24 Ultra, the ultimate form of Galaxy Ultra with a new titanium exterior and a 6.8-inch flat display. Powered by Snapdragon 8 Gen 3 for Galaxy with integrated AI search and live translate.</p>', '{\"display\": \"6.8-inch Dynamic AMOLED 2X, 120Hz\", \"processor\": \"Snapdragon 8 Gen 3 for Galaxy\", \"camera\": \"200MP + 50MP + 12MP + 10MP\", \"battery\": \"5000 mAh 45W Fast Charging\", \"spen\": \"Integrated S Pen\"}', 's24ultra.jpg', NULL, 134999.00, 129999.00, 110000.00, 1, 1, 1, 12, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(3, 1, 4, 'OnePlus 12 5G', 'oneplus-12-5g', 'OP12-BASE', '8901234567892', 'CPH2573', 'Snapdragon 8 Gen 3, 4th Gen Hasselblad Camera, 2K 120Hz ProXDR display with 5400 nits peak brightness.', '<p>The OnePlus 12 redefines smooth performance with cutting-edge hardware, revolutionary Trinity Engine, and 100W SUPERVOOC ultra-fast flash charging that hits 100% in 26 minutes.</p>', '{\"display\": \"6.82-inch 2K ProXDR 120Hz AMOLED\", \"processor\": \"Snapdragon 8 Gen 3\", \"camera\": \"50MP Sony LYT-808 + 64MP 3x Periscope + 48MP UW\", \"battery\": \"5400 mAh with 100W Wired + 50W Wireless\"}', 'oneplus12.jpg', NULL, 69999.00, 64999.00, 54000.00, 1, 1, 1, 12, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(4, 1, 3, 'Google Pixel 8 Pro', 'google-pixel-8-pro', 'GP8P-BASE', '8901234567893', 'GC3VE', 'Google Tensor G3, advanced Google AI, Pro camera system with Best Take and Magic Editor.', '<p>Pixel 8 Pro is engineered by Google with state-of-the-art photography features, real-time audio translation, temperature sensor, and guaranteed 7 years of Android OS and security updates.</p>', '{\"display\": \"6.7-inch Super Actua LTPO OLED 120Hz\", \"processor\": \"Google Tensor G3\", \"camera\": \"50MP Octa PD + 48MP UW + 48MP 5x Telephoto\", \"battery\": \"5050 mAh\"}', 'pixel8pro.jpg', NULL, 106999.00, 98999.00, 85000.00, 0, 1, 1, 12, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(5, 2, 8, 'Anker Prime 67W GaN Wall Charger', 'anker-prime-67w-gan-charger', 'ANK-GAN-67W', '8901234567894', 'A2669', '3-Port ultra-compact high-speed wall charger with PowerIQ 4.0 for smartphones and laptops.', '<p>Charge 3 devices simultaneously at ultra-fast speeds. Powered by Anker GaNPrime technology with active temperature monitoring 3 million times per day.</p>', '{\"ports\": \"2x USB-C + 1x USB-A\", \"output\": \"67W Max Total\", \"technology\": \"GaNPrime + ActiveShield 2.0\"}', 'anker_67w.jpg', NULL, 3999.00, 3499.00, 2200.00, 0, 1, 1, 24, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(6, 2, 1, 'Apple 20W USB-C Power Adapter', 'apple-20w-usb-c-power-adapter', 'APL-20W-PWR', '8901234567895', 'MHJE3HN/A', 'Original Apple 20W USB-C power adapter offering fast, efficient charging at home or in the office.', '<p>Compatible with any USB-C enabled device. Pair with iPhone 8 or later for fast charging—50% battery in around 30 minutes.</p>', '{\"wattage\": \"20W\", \"connector\": \"USB-C\", \"compatibility\": \"iPhone, iPad, AirPods\"}', 'apple_20w.jpg', NULL, 1900.00, 1699.00, 1200.00, 0, 0, 1, 12, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(7, 3, 7, 'boAt Airdopes 141 ANC TWS Earbuds', 'boat-airdopes-141-anc-tws', 'BOAT-AD-141', '8901234567896', 'AD141ANC', 'Active Noise Cancellation up to 32dB, 42 hours playback, ENx quad mics, and ASAP Charge.', '<p>Block out unwanted ambient rumble with up to 32dB ANC. Enjoy crystal clear calls with quad-mic environmental noise cancellation and beast low-latency gaming mode.</p>', '{\"driver\": \"10mm dynamic drivers\", \"anc\": \"Up to 32dB Active Noise Cancellation\", \"battery\": \"42 Hours total with case\", \"ip_rating\": \"IPX5 Water Resistant\"}', 'boat_airdopes141.jpg', NULL, 2990.00, 1699.00, 950.00, 0, 1, 1, 12, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(8, 4, 7, 'boAt Stone 352 Bluetooth Speaker', 'boat-stone-352-portable-speaker', 'BOAT-ST-352', '8901234567897', 'Stone352', '10W RMS immersive stereo sound, IPX7 waterproof, 12 hours playback with Type-C charging.', '<p>Take your music anywhere with rugged IPX7 waterproof engineering. Features TWS pairing to connect two Stone 352 units for punchy stereo sound.</p>', '{\"output\": \"10W RMS\", \"battery\": \"Up to 12 Hours\", \"connectivity\": \"Bluetooth 5.0, AUX, TF Card\", \"waterproof\": \"IPX7\"}', 'boat_stone352.jpg', NULL, 3490.00, 1499.00, 800.00, 0, 0, 1, 12, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(9, 5, 2, 'Samsung Galaxy Watch 6 Classic (47mm)', 'samsung-galaxy-watch-6-classic', 'SM-W6-47MM', '8901234567898', 'SM-R960', 'Iconic rotating bezel, sapphire crystal glass, advanced sleep coaching, ECG, and blood pressure monitoring.', '<p>The smartwatch that knows you best. Timeless design with a 15% thinner rotating bezel and larger screen, packed with body composition analysis and cardiac health sensors.</p>', '{\"display\": \"1.5-inch Super AMOLED Sapphire\", \"bezel\": \"Physical Rotating Bezel\", \"sensors\": \"BioActive Sensor (Optical Heart + ECG + BIA)\", \"battery\": \"425 mAh\"}', 'galaxy_watch6.jpg', NULL, 36999.00, 29999.00, 24000.00, 0, 1, 1, 12, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(10, 6, 9, 'Spigen Tough Armor Case for iPhone 15 Pro', 'spigen-tough-armor-iphone-15-pro', 'SPG-TA-IP15P', '8901234567899', 'ACS06540', 'Extreme dual-layer drop protection with Air Cushion Technology and reinforced kickstand.', '<p>Built to withstand anything thrown at it. Engineered with impact foam interior, shock-absorbent TPU, and durable polycarbonate shell. Certified Mil-grade protection.</p>', '{\"material\": \"TPU + Polycarbonate + Extreme Impact Foam\", \"features\": \"Built-in Kickstand, Air Cushion Corner Pockets\", \"wireless_charging\": \"Compatible\"}', 'spigen_tougharmor.jpg', NULL, 2499.00, 1899.00, 750.00, 0, 0, 1, 24, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(11, 7, 9, 'Spigen Glas.tR EZ Fit Tempered Glass (2-Pack)', 'spigen-glastr-ezfit-tempered-glass', 'SPG-GLAS-EZ', '8901234567900', 'AGL06580', '9H hardness tempered glass with auto-alignment installation tray for bubble-free application.', '<p>Includes an innovative auto-alignment installation tray that makes applying screen protectors effortless and perfectly centered without bubbles or dust.</p>', '{\"hardness\": \"9H Hardness\", \"coating\": \"Oleophobic anti-fingerprint\", \"package\": \"2 Pieces with Auto-Align Tray\"}', 'spigen_glass.jpg', NULL, 1699.00, 1299.00, 400.00, 0, 0, 1, 6, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(12, 8, 8, 'Anker 325 Power Bank 20000mAh (PowerCore)', 'anker-325-powerbank-20000mah', 'ANK-PB-20000', '8901234567901', 'A1286', 'Ultra-high 20000mAh capacity power bank with PowerIQ high-speed charging and dual output.', '<p>Massive 20,000mAh capacity provides over 4 full charges for iPhone 14 or Galaxy S23. MultiProtect safety system ensures complete protection for you and your devices.</p>', '{\"capacity\": \"20,000 mAh / 74Wh\", \"inputs\": \"USB-C + Micro-USB\", \"outputs\": \"2x USB-A PowerIQ Ports\", \"safety\": \"MultiProtect Surge and Temp Control\"}', 'anker_20000.jpg', NULL, 3299.00, 2499.00, 1500.00, 0, 1, 1, 18, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(13, 9, 1, 'Original iPhone 15 Pro OLED Screen Assembly', 'original-iphone-15-pro-oled-assembly', 'REP-DISP-IP15P', '8901234567902', 'OEM-DISP-15P', 'Genuine OEM Super Retina XDR 120Hz ProMotion display module with digitizer and ambient flex.', '<p>Brand new original display replacement part for certified iPhone 15 Pro screen repairs. True Tone and ProMotion calibrated.</p>', '{\"type\": \"Super Retina XDR OLED\", \"resolution\": \"2556 x 1179 pixels at 460 ppi\", \"quality\": \"Original OEM Grade\"}', 'spare_iphone15_screen.jpg', NULL, 19500.00, 19500.00, 14000.00, 0, 0, 1, 6, '2026-11-13 11:16:33', '2026-11-13 11:16:33'),
-(14, 9, 2, 'Original Samsung S24 Ultra 5000mAh Battery', 'original-samsung-s24-ultra-battery', 'REP-BAT-S24U', '8901234567903', 'EB-BS928ABY', 'Original Samsung factory replacement lithium-ion polymer battery cell with adhesive pull tabs.', '<p>Genuine Samsung replacement battery providing original battery life and peak 45W fast charging performance.</p>', '{\"capacity\": \"5000 mAh (Typical)\", \"voltage\": \"3.88V\", \"part_number\": \"GH82-32865A\"}', 'spare_s24_battery.jpg', NULL, 3200.00, 3200.00, 1800.00, 0, 0, 1, 6, '2026-11-13 11:16:33', '2026-11-13 11:16:33');
+INSERT INTO `products` (`id`, `category_id`, `brand_id`, `name`, `slug`, `sku`, `barcode`, `model_number`, `short_desc`, `description`, `specifications`, `thumbnail`, `images`, `base_price`, `sale_price`, `cost_price`, `has_variants`, `is_featured`, `is_active`, `warranty_months`, `discount_percent`, `created_at`, `updated_at`) VALUES
+(15, 1, 9, 'BOLTT ACE 5G (Sky Blue, 64 GB)', 'boltt-ace-5g-sky-blue-64-gb', 'GFHFYY', NULL, NULL, 'ujhukyujk', 'kikiuk', NULL, '/uploads/products/prod_0a2cfdcaf24048f5.webp', NULL, 24999.00, 14999.00, 13999.00, 0, 1, 1, 12, NULL, '2026-11-28 06:25:20', '2026-11-28 06:25:20');
 
 -- --------------------------------------------------------
 
@@ -554,14 +533,6 @@ CREATE TABLE `product_reviews` (
   `created_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `product_reviews`
---
-
-INSERT INTO `product_reviews` (`id`, `product_id`, `user_id`, `rating`, `title`, `review_text`, `is_verified_purchase`, `status`, `created_at`) VALUES
-(1, 1, 4, 5, 'Phenomenal Phone & Build Quality!', 'The Natural Titanium feels extraordinarily light compared to 14 Pro Max. The 5x camera lens is crazy sharp.', 1, 'approved', '2026-11-13 11:16:33'),
-(2, 5, 4, 5, 'Best GaN Charger Ever', 'Charges my iPhone and MacBook together without heating up. Super portable size.', 1, 'approved', '2026-11-13 11:16:33');
-
 -- --------------------------------------------------------
 
 --
@@ -580,19 +551,6 @@ CREATE TABLE `product_variants` (
   `is_active` tinyint(1) DEFAULT 1,
   `created_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `product_variants`
---
-
-INSERT INTO `product_variants` (`id`, `product_id`, `sku`, `barcode`, `variant_name`, `attributes`, `additional_price`, `image`, `is_active`, `created_at`) VALUES
-(1, 1, 'IPH15PM-256-NAT', '8901234567911', '256GB - Natural Titanium', '{\"storage\": \"256GB\", \"color\": \"Natural Titanium\"}', 0.00, 'iphone15_natural.jpg', 1, '2026-11-13 11:16:33'),
-(2, 1, 'IPH15PM-512-NAT', '8901234567912', '512GB - Natural Titanium', '{\"storage\": \"512GB\", \"color\": \"Natural Titanium\"}', 20000.00, 'iphone15_natural.jpg', 1, '2026-11-13 11:16:33'),
-(3, 1, 'IPH15PM-256-BLK', '8901234567913', '256GB - Black Titanium', '{\"storage\": \"256GB\", \"color\": \"Black Titanium\"}', 0.00, 'iphone15_black.jpg', 1, '2026-11-13 11:16:33'),
-(4, 2, 'SMS24U-256-GRY', '8901234567914', '256GB - Titanium Gray', '{\"storage\": \"256GB\", \"color\": \"Titanium Gray\"}', 0.00, 's24_gray.jpg', 1, '2026-11-13 11:16:33'),
-(5, 2, 'SMS24U-512-GRY', '8901234567915', '512GB - Titanium Gray', '{\"storage\": \"512GB\", \"color\": \"Titanium Gray\"}', 10000.00, 's24_gray.jpg', 1, '2026-11-13 11:16:33'),
-(6, 3, 'OP12-256-BLK', '8901234567916', '256GB / 12GB - Silky Black', '{\"storage\": \"256GB\", \"ram\": \"12GB\", \"color\": \"Silky Black\"}', 0.00, 'op12_black.jpg', 1, '2026-11-13 11:16:33'),
-(7, 3, 'OP12-512-GRN', '8901234567917', '512GB / 16GB - Flowy Emerald', '{\"storage\": \"512GB\", \"ram\": \"16GB\", \"color\": \"Flowy Emerald\"}', 5000.00, 'op12_emerald.jpg', 1, '2026-11-13 11:16:33');
 
 -- --------------------------------------------------------
 
@@ -767,7 +725,7 @@ CREATE TABLE `repair_parts` (
 --
 
 INSERT INTO `repair_parts` (`id`, `repair_id`, `product_id`, `variant_id`, `part_name`, `quantity`, `unit_cost`, `unit_price`, `added_by`, `created_at`) VALUES
-(1, 1, 13, NULL, 'Original iPhone 15 Pro OLED Screen Assembly', 1, 14000.00, 19500.00, 2, '2026-11-13 11:16:33');
+(1, 1, NULL, NULL, 'Original iPhone 15 Pro OLED Screen Assembly', 1, 14000.00, 19500.00, 2, '2026-11-13 11:16:33');
 
 -- --------------------------------------------------------
 
@@ -889,11 +847,7 @@ CREATE TABLE `stock_movements` (
 --
 
 INSERT INTO `stock_movements` (`id`, `product_id`, `variant_id`, `movement_type`, `quantity`, `cost_per_unit`, `reference_id`, `reference_type`, `notes`, `created_by`, `created_at`) VALUES
-(1, 1, 1, 'purchase_in', 12, 125000.00, 'PO-INIT-001', 'purchase', 'Opening ERP stock initialization', 1, '2026-11-13 11:16:33'),
-(2, 1, 2, 'purchase_in', 8, 140000.00, 'PO-INIT-001', 'purchase', 'Opening ERP stock initialization', 1, '2026-11-13 11:16:33'),
-(3, 2, 4, 'purchase_in', 14, 110000.00, 'PO-INIT-001', 'purchase', 'Opening ERP stock initialization', 1, '2026-11-13 11:16:33'),
-(4, 5, NULL, 'purchase_in', 35, 2200.00, 'PO-INIT-002', 'purchase', 'Opening ERP stock initialization', 1, '2026-11-13 11:16:33'),
-(5, 13, NULL, 'purchase_in', 4, 14000.00, 'PO-INIT-003', 'purchase', 'Initial spare parts allocation', 1, '2026-11-13 11:16:33');
+(7, 15, NULL, '', 10, 13999.00, 'OPENING', 'system', 'Opening inventory', 1, '2026-11-28 06:25:20');
 
 -- --------------------------------------------------------
 
@@ -1101,8 +1055,8 @@ ALTER TABLE `orders`
 ALTER TABLE `order_items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_oi_order` (`order_id`),
-  ADD KEY `fk_oi_product` (`product_id`),
-  ADD KEY `fk_oi_variant` (`variant_id`);
+  ADD KEY `fk_oi_variant` (`variant_id`),
+  ADD KEY `fk_oi_product` (`product_id`);
 
 --
 -- Indexes for table `order_status_history`
@@ -1143,8 +1097,8 @@ ALTER TABLE `pos_sales`
 ALTER TABLE `pos_sale_items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_psi_sale` (`pos_sale_id`),
-  ADD KEY `fk_psi_prod` (`product_id`),
-  ADD KEY `fk_psi_variant` (`variant_id`);
+  ADD KEY `fk_psi_variant` (`variant_id`),
+  ADD KEY `fk_psi_prod` (`product_id`);
 
 --
 -- Indexes for table `products`
@@ -1324,19 +1278,19 @@ ALTER TABLE `audit_logs`
 -- AUTO_INCREMENT for table `brands`
 --
 ALTER TABLE `brands`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -1360,13 +1314,13 @@ ALTER TABLE `expenses`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `invoices`
 --
 ALTER TABLE `invoices`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `login_attempts`
@@ -1408,19 +1362,19 @@ ALTER TABLE `permissions`
 -- AUTO_INCREMENT for table `pos_sales`
 --
 ALTER TABLE `pos_sales`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `pos_sale_items`
 --
 ALTER TABLE `pos_sale_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `product_reviews`
@@ -1498,7 +1452,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `stock_movements`
 --
 ALTER TABLE `stock_movements`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
@@ -1593,7 +1547,7 @@ ALTER TABLE `orders`
 --
 ALTER TABLE `order_items`
   ADD CONSTRAINT `fk_oi_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_oi_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
+  ADD CONSTRAINT `fk_oi_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_oi_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variants` (`id`) ON DELETE SET NULL;
 
 --
@@ -1621,7 +1575,7 @@ ALTER TABLE `pos_sales`
 -- Constraints for table `pos_sale_items`
 --
 ALTER TABLE `pos_sale_items`
-  ADD CONSTRAINT `fk_psi_prod` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
+  ADD CONSTRAINT `fk_psi_prod` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_psi_sale` FOREIGN KEY (`pos_sale_id`) REFERENCES `pos_sales` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_psi_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variants` (`id`) ON DELETE SET NULL;
 

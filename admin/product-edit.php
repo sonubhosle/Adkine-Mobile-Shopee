@@ -85,13 +85,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             $slug = $name === $product['name'] ? $product['slug'] : strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name), '-'));
             
+            // Calculate discount percent if applicable
+            $discountPercent = null;
+            if ($salePrice !== null && $salePrice < $basePrice && $basePrice > 0) {
+                $discountPercent = round((($basePrice - $salePrice) / $basePrice) * 100, 2);
+            }
+
             db_query(
-                'UPDATE products SET category_id = ?, brand_id = ?, name = ?, slug = ?, sku = ?, barcode = ?, model_number = ?, short_desc = ?, description = ?, specifications = ?, base_price = ?, sale_price = ?, cost_price = ?, has_variants = ?, is_featured = ?, is_active = ?, warranty_months = ?' . ($newThumbnail !== null ? ', thumbnail = ?' : '') . ' WHERE id = ?',
+                'UPDATE products SET category_id = ?, brand_id = ?, name = ?, slug = ?, sku = ?, model_number = ?, short_desc = ?, description = ?, specifications = ?, base_price = ?, sale_price = ?, cost_price = ?, has_variants = ?, is_featured = ?, is_active = ?, warranty_months = ?, discount_percent = ?' . ($newThumbnail !== null ? ', thumbnail = ?' : '') . ' WHERE id = ?',
                 array_merge([
-                    $categoryId, $brandId, $name, $slug, $sku, $barcode,
-                    $modelNumber, $shortDesc, $description, $specifications,
+                    $categoryId, $brandId, $name, $slug, $sku, $modelNumber,
+                    $shortDesc, $description, $specifications,
                     $basePrice, $salePrice, $costPrice, $hasVariants,
-                    $isFeatured, $isActive, $warrantyMonths,
+                    $isFeatured, $isActive, $warrantyMonths, $discountPercent,
                 ], $newThumbnail !== null ? [$newThumbnail] : [], [$id])
             );
 

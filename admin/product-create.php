@@ -13,20 +13,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_csrf();
 
     $name = trim((string)($_POST['name'] ?? ''));
-    $sku = strtoupper(trim((string)($_POST['sku'] ?? '')));
+    // Generate SKU if not provided
+    $skuInput = trim((string)($_POST['sku'] ?? ''));
+    $sku = $skuInput !== '' ? strtoupper($skuInput) : null;
+    if ($sku === null) {
+        do {
+            $sku = 'PROD-' . strtoupper(bin2hex(random_bytes(4)));
+            $exists = db_fetch_value("SELECT id FROM products WHERE sku = ?", [$sku]);
+        } while ($exists);
+    }
     $categoryId = (int)($_POST['category_id'] ?? 0);
     $brandId = (int)($_POST['brand_id'] ?? 0);
     $modelNumber = trim((string)($_POST['model_number'] ?? '')) ?: null;
-    $barcode = trim((string)($_POST['barcode'] ?? '')) ?: null;
     $basePrice = (float)($_POST['base_price'] ?? 0);
     $salePriceInput = trim((string)($_POST['sale_price'] ?? ''));
     $salePrice = $salePriceInput !== '' ? (float)$salePriceInput : null;
     $costPrice = (float)($_POST['cost_price'] ?? 0);
     $initialStock = max(0, (int)($_POST['initial_stock'] ?? 0));
     $warrantyMonths = max(0, (int)($_POST['warranty_months'] ?? 12));
-    $shortDesc = trim((string)($_POST['short_desc'] ?? '')) ?: null;
     $description = trim((string)($_POST['description'] ?? '')) ?: null;
-    $specifications = trim((string)($_POST['specifications'] ?? '')) ?: null;
     $isActive = isset($_POST['is_active']) ? 1 : 0;
     $isFeatured = isset($_POST['is_featured']) ? 1 : 0;
     $hasVariants = isset($_POST['has_variants']) ? 1 : 0;
@@ -37,8 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($name === '' || mb_strlen($name) > 200) {
         $errors[] = 'A valid product name is required (max 200 chars).';
     }
-    if ($sku === '' || mb_strlen($sku) > 100) {
-        $errors[] = 'A valid unique SKU is required (max 100 chars).';
+    // SKU validation – allow auto‑generated but limit length
+    if (mb_strlen($sku) > 100) {
+        $errors[] = 'SKU must be at most 100 characters.';
     } else {
         $exists = db_fetch_value("SELECT id FROM products WHERE sku = ?", [$sku]);
         if ($exists) {
@@ -99,12 +105,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         db_begin();
         try {
+            // Calculate discount percent if applicable
+            $discountPercent = null;
+            if ($salePrice !== null && $salePrice < $basePrice && $basePrice > 0) {
+                $discountPercent = round((($basePrice - $salePrice) / $basePrice) * 100, 2);
+            }
+
+            // Unused fields set to null
+            $barcode = null;
+            $shortDesc = null;
+            $specifications = null;
+
             $productId = db_insert(
-                'INSERT INTO products (category_id, brand_id, name, slug, sku, barcode, model_number, short_desc, description, specifications, thumbnail, base_price, sale_price, cost_price, has_variants, is_featured, is_active, warranty_months) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                'INSERT INTO products (category_id, brand_id, name, slug, sku, model_number, description, thumbnail, base_price, sale_price, cost_price, has_variants, is_featured, is_active, warranty_months, discount_percent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 [
-                    $categoryId, $brandId, $name, $slug, $sku, $barcode, $modelNumber,
-                    $shortDesc, $description, $specifications, $thumbnailPath,
-                    $basePrice, $salePrice, $costPrice, $hasVariants, $isFeatured, $isActive, $warrantyMonths
+                    $categoryId, $brandId, $name, $slug, $sku, $modelNumber,
+                    $description, $thumbnailPath,
+                    $basePrice, $salePrice, $costPrice, $hasVariants, $isFeatured, $isActive, $warrantyMonths, $discountPercent
                 ]
             );
 
@@ -185,8 +202,8 @@ $brands     = db_fetch_all("SELECT id, name FROM brands WHERE is_active=1 ORDER 
                 <label class="block text-sm font-semibold text-slate-700">Product Name <span class="text-rose-500">*</span>
                     <input name="name" required maxlength="200" value="<?= e($old['name'] ?? '') ?>" placeholder="e.g. Apple iPhone 15 Pro" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-normal text-slate-900 shadow-xs outline-none transition focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
                 </label>
-                <label class="block text-sm font-semibold text-slate-700">SKU <span class="text-rose-500">*</span>
-                    <input name="sku" required maxlength="100" value="<?= e($old['sku'] ?? '') ?>" placeholder="e.g. IP15P-256-BLK" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-normal text-slate-900 shadow-xs outline-none transition focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
+                <label class="block text-sm font-semibold text-slate-700">SKU <span class="text-rose-500">(optional)</span>
+                    <input name="sku" maxlength="100" value="<?= e($old['sku'] ?? '') ?>" placeholder="Leave blank for auto‑generated" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-normal text-slate-900 shadow-xs outline-none transition focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
                 </label>
                 <label class="block text-sm font-semibold text-slate-700">Category <span class="text-rose-500">*</span>
                     <select name="category_id" required class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-normal text-slate-900 shadow-xs outline-none transition focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
@@ -207,9 +224,7 @@ $brands     = db_fetch_all("SELECT id, name FROM brands WHERE is_active=1 ORDER 
                 <label class="block text-sm font-semibold text-slate-700">Model Number
                     <input name="model_number" maxlength="100" value="<?= e($old['model_number'] ?? '') ?>" placeholder="Optional" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-normal text-slate-900 shadow-xs outline-none transition focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
                 </label>
-                <label class="block text-sm font-semibold text-slate-700">Barcode
-                    <input name="barcode" maxlength="100" value="<?= e($old['barcode'] ?? '') ?>" placeholder="Optional" class="mt-1.5 block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-normal text-slate-900 shadow-xs outline-none transition focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
-                </label>
+
             </div>
         </section>
 

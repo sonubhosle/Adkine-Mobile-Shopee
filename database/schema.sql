@@ -1,8 +1,3 @@
--- ==============================================================
--- Mobile Shop E-Commerce, Repair & Inventory ERP System
--- Normalized Database Schema (MySQL 8+ / MariaDB 10.4+)
--- Engine: InnoDB | Charset: utf8mb4 | Collation: utf8mb4_unicode_ci
--- ==============================================================
 
 SET FOREIGN_KEY_CHECKS = 0;
 

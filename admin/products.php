@@ -5,6 +5,44 @@
 
 require_once __DIR__ . '/../includes/admin-header.php';
 
+// Handle Delete via POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    require_csrf();
+    $id = (int)($_POST['id'] ?? 0);
+    if ($id > 0) {
+        // Begin transaction
+        db_begin();
+        try {
+            // Delete related order_items if any
+            $orderCount = (int)db_fetch_value("SELECT COUNT(*) FROM order_items WHERE product_id = ?", [$id]);
+            if ($orderCount > 0) {
+                db_query("DELETE FROM order_items WHERE product_id = ?", [$id]);
+            }
+            // Delete related pos_sale_items if any
+            $posCount = (int)db_fetch_value("SELECT COUNT(*) FROM pos_sale_items WHERE product_id = ?", [$id]);
+            if ($posCount > 0) {
+                db_query("DELETE FROM pos_sale_items WHERE product_id = ?", [$id]);
+            }
+            // Remove product thumbnail if exists
+            $product = db_fetch_one("SELECT thumbnail FROM products WHERE id = ?", [$id]);
+            if ($product && !empty($product['thumbnail'])) {
+                $thumbPath = ROOT_PATH . '/' . ltrim($product['thumbnail'], '/');
+                if (is_file($thumbPath)) {
+                    @unlink($thumbPath);
+                }
+            }
+            // Delete the product
+            db_query("DELETE FROM products WHERE id = ?", [$id]);
+            db_commit();
+            set_flash('success', 'Product deleted permanently.');
+        } catch (Throwable $e) {
+            db_rollback();
+            set_flash('error', 'Failed to delete product: ' . $e->getMessage());
+        }
+    }
+    redirect(url('/admin/products.php'));
+}
+
 // Handle Deactivation via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'deactivate') {
     require_csrf();
@@ -124,14 +162,7 @@ $products = db_fetch_all(
                     <td class="px-4 py-3 text-right">
                         <div class="inline-flex items-center gap-3">
                             <a class="font-semibold text-indigo-600 hover:text-indigo-800 hover:underline text-xs" href="<?= url('/admin/product-edit.php?id=' . (int)$product['id']) ?>">Edit</a>
-                            <?php if ($product['is_active']): ?>
-                            <form method="POST" action="<?= url('/admin/products.php') ?>" onsubmit="return confirm('Deactivate this product?')">
-                                <?= csrf_field() ?>
-                                <input type="hidden" name="action" value="deactivate">
-                                <input type="hidden" name="id" value="<?= (int)$product['id'] ?>">
-                                <button type="submit" class="font-semibold text-rose-600 hover:text-rose-800 hover:underline text-xs">Deactivate</button>
-                            </form>
-                            <?php endif; ?>
+                                                        <button type="button" class="delete-btn font-semibold text-rose-600 hover:text-rose-800 hover:underline text-xs" data-id="<?= (int)$product['id'] ?>">Delete</button>
                         </div>
                     </td>
                 </tr>
@@ -167,5 +198,54 @@ $products = db_fetch_all(
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/admin-footer.php'; ?>
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-xl shadow-lg max-w-sm w-full p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Delete this product?</h3>
+            <p class="text-sm text-gray-600 mb-6">This action cannot be undone. Are you sure you want to continue?</p>
+            <div class="flex justify-end space-x-3">
+                <button id="cancel-delete" type="button" class="px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
+                <button id="confirm-delete" type="button" class="px-4 py-2 text-sm text-white bg-rose-600 rounded hover:bg-rose-700">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden delete form -->
+    <form id="delete-form" method="POST" action="<?= url('/admin/products.php') ?>" class="hidden">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" value="delete">
+        <input type="hidden" name="id" id="delete-id" value="">
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('delete-modal');
+            const confirmBtn = document.getElementById('confirm-delete');
+            const cancelBtn = document.getElementById('cancel-delete');
+            const deleteForm = document.getElementById('delete-form');
+            const deleteIdInput = document.getElementById('delete-id');
+
+            // Open modal on delete button click
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const id = this.getAttribute('data-id');
+                    deleteIdInput.value = id;
+                    modal.classList.remove('hidden');
+                });
+            });
+
+            // Cancel button hides modal
+            cancelBtn.addEventListener('click', function () {
+                modal.classList.add('hidden');
+            });
+
+            // Confirm button submits hidden form
+            confirmBtn.addEventListener('click', function () {
+                modal.classList.add('hidden');
+                // Submit the form programmatically
+                deleteForm.submit();
+            });
+        });
+    </script>
+
 
